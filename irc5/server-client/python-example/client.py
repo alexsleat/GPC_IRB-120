@@ -2,6 +2,7 @@
 
 import socket
 import sys
+import time
 
 HOST, PORT = "192.168.125.1", 1025
 data = " ".join(sys.argv[1:])
@@ -14,7 +15,7 @@ for i in range(1,5):
 
 	#try:
 	    # and send data
-	sock.send(data + "\n")
+	sock.send(data)
 
 	    # Receive data from the server and shut down
 	received = sock.recv(1024)
@@ -24,6 +25,10 @@ for i in range(1,5):
 
 else:
 	#finally:
+	print "sleepytime"
+	time.sleep(5)
 	print "fin"
+	sock.send("closeSocket")
+	time.sleep(5)
 	sock.close()
 
