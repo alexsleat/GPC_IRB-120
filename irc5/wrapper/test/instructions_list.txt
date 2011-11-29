@@ -1,0 +1,395 @@
+Data := Value
+AccSet Acc Ramp
+ActUnit MecUnit
+Add Name AddValue
+AliasIO FromSignal ToSignal
+ArcRefresh
+ArcKill
+BitClear BitData BitPos
+BitSet BitData BitPos
+BookErrNo ErrorName
+Break
+CallByVar Name Number
+CancelLoad LoadNo
+CirPathMode [\PathFrame] | [\ObjectFrame] | [\CirPointOri]
+Clear Name
+ClearIOBuff IODevice
+ClearPath
+ClearRawBytes RawData [\FromIndex]
+ClkReset Clock
+ClkStart Clock
+ClkStop Clock
+Close IODevice
+CloseDir Dev
+! Comment
+ConfJ [\On] | [\Off]
+ConfL [\On] | [\Off]
+CONNECT Interrupt WITH Trap routine
+CopyFile OldPath NewPath
+CopyRawBytes FromRawData FromIndex ToRawData ToIndex [\NoOfBytes]
+CorrClear
+CorrCon Descr
+CorrDiscon Descr
+CorrWrite
+CorrWrite Descr Data
+CorrClear
+DeactUnit MecUnit
+Decr Name
+DitherAct [\MechUnit] Axis [\Level]
+DitherDeact
+DropSensor Mecunt
+DropWObj WObj
+EOffsOff
+EOffsOn [\ExeP] ProgPoint
+EOffsSet EAxOffs
+EraseModule ModuleName
+ErrLog ErrorID [\W] Argument1 Argument2 Argument3 Argument4 Argument5
+ErrRaise ErrorName ErrorID Argument1 Argument2 Argument3 Argument4 Argument5
+ErrWrite [\W] Header Reason [\RL2] [\RL3] [\RL4]
+Exit
+ExitCycle
+FOR Loopcounter FROM Startvalue TO Endvalue
+[STEP Stepvalue] DO ... ENDFOR
+GetDataVal Object [\Block] Value
+GetSysData DestObject [\ObjectName]
+GetTrapData TrapEvent
+GOTO Label
+GripLoad Load
+IDelete Interrupt
+IDisable
+IEnable
+IError ErrorDomain [\ErrorId] ErrorType Interrupt
+IF Condition ...
+IF Condition THEN ...
+{ELSEIF Condition THEN ...}
+[ELSE ...]
+ENDIF
+Incr Name
+IndAMove MecUnit Axis [\ToAbsPos] | [\ToAbsNum] Speed [\Ramp]
+IndCMove MecUnit Axis Speed [\Ramp]
+IndDMove MecUnit Axis Delta Speed [\Ramp]
+IndReset MecUnit Axis [\RefPos] | [\RefNum] | [\Short] | [\Fwd] | [\Bwd] | [\Old]
+IndRMove MecUnit Axis [\ToRelPos] | [\ToRelNum] | [\Short] | [\Fwd] | [\Bwd] Speed [\Ramp]
+InvertDO Signal
+IOBusStart BusName
+IOBusState BusName State [\Phys] | [\Logic]
+IODisable UnitName MaxTime
+IOEnable UnitName MaxTime
+IPers Name Interrupt
+ISignalAI [\Single] Signal Condition HighValue LowValue DeltaValue [\DPos] | [\DNeg] Interrupt
+ISignalAO [\Single] Signal Condition HighValue LowValue DeltaValue [\DPos] | [\DNeg] Interrupt
+ISignalDI [\Single] Signal TriggValue Interrupt
+ISignalDO [\Single] Signal TriggValue Interrupt
+ISignalGI [\Single] Signal Interrupt
+ISignalGO [\Single] Signal Interrupt
+ISleep Interrupt
+ITimer [\Single] Time Interrupt
+IVarValue VarNo Value Interrupt
+IWatch Interrupt ParIdType LoadIdType Tool [\PayLoad]
+
+
+
+
+ 
+ 
+[\WObj] [\ConfAngle] [\SlowTest] [\Accuracy]
+Load
+[\Dynamic] FilePath [\File]
+LoadId ParIdType LoadIdType Tool [\PayLoad] [\WObj]
+[\ConfAngle] [\SlowTest] [\Accuracy]
+MakeDir
+Path
+ManLoadIdProc [\ParIdType] [\MechUnit] [\MechUnitName]
+[\AxisNumber] [\PayLoad] [\ConfigAngle] [\DeactAll]
+[\AlreadyActive] [\DefinedFlag]
+MechUnitLoad
+MotionSup
+MechUnit AxisNo Load
+[\On] | [\Off] [\TuneValue]
+MoveAbsJ [\Conc] ToJointPos [\ID] Speed [\V] | [\T] Zone
+[\Z] Tool [\WObj]
+MoveC [\Conc] CirPoint ToPoint [\ID] Speed [\V] | [\T] Zone
+[\Z] Tool [\WObj]
+MoveCDO CirPoint ToPoint [\ID] Speed [\T] Zone Tool
+[\WObj] Signal Value
+MoveCSync CirPoint ToPoint [\ID] Speed [\T] Zone Tool
+[\WObj] ProcName
+MoveExtJ
+[\Conc] ToJointPos [\ID] Speed [\T] Zone [\Inpos]
+MoveJ [\Conc] ToPoint [\ID] Speed [\V] | [\T] Zone [\Z] Tool
+[\WObj]
+MoveJDO ToPoint [\ID] Speed [\T] Zone Tool [\WObj]
+Signal Value
+MoveJSync
+ProcName
+ToPoint [\ID] Speed [\T] Zone Tool [\WObj]
+MoveL [\Conc] ToPoint [\ID] Speed [\V] | [\T] Zone [\Z]
+Tool [\WObj]
+MoveLDO
+ 
+ToPoint [\ID] Speed [\T] Zone Tool [\WObj]
+71
+ 
+Signal Value
+MoveLSync ToPoint [\ID] Speed [\T] Zone Tool [\WObj]
+ProcName
+MToolRotCalib
+RefTip ZPos [\XPos] Tool
+MToolTCPCalib
+Open Object
+OpenDir
+Pos1 Pos2 Pos3 Pos4 Tool MaxErr MeanErr
+[\File] IODevice [\Read] | [\Write] | [\Append] | [\Bin]
+Dev Path
+PackDNHeader
+Service Path RawData
+PackRawBytes Value RawData [\Network] StartIndex
+[\Hex1] | [\IntX] | [\Float4] | [\ASCII]
+PathAccLim
+AccLim [\AccMax] DecelLim [\DecelMax]
+PathRecMoveBwd [\ID] [\ToolOffs] [\Speed]
+PathRecMoveFwd [\ID] [\ToolOffs] [\Speed]
+PathRecStart ID
+PathRecStop [\Clear]
+PathResol
+Value
+PDispOn [\Rot] [\ExeP] ProgPoint Tool [\WObj]
+PDispSet DispFrame
+Procedure
+{ Argument }
+ProcerrRecovery
+PulseDO
+RAISE
+[\SyncOrgMoveInst] | [\SyncLastMoveInst]
+[\PLength] Signal
+[ Error no ]
+RaiseToUser [\Continue] | [\BreakOff] [\ErrorNumber]
+ReadAnyBin IODevice Data [\Time]
+ReadCfgData ReadErrData 
+72
+InstancePath Attribute CfgData [\ListNo]
+TrapEvent ErrorDomain ErrorId ErrorType [\Str1]
+ 
+© Copyright 2004-2007 ABB. All rights reserved.
+PDispOff
+ 
+[\Str2] [\Str3] [\Str4] [\Str5]
+ReadRawBytes
+IODevice RawData NoOfBytes[\Time]
+RemoveDir Path
+RemoveFile Path
+RenameFile OldPath NewPath
+Reset
+Signal
+ResetRetryCountl
+RestoPath
+RETURN
+Rewind
+Save
+[ Return value ]
+IODevice
+[\TaskRef] ModuleName [\FilePath] [\File]
+SearchC [\Stop] | [\PStop] | [\Sup] Signal SearchPoint CirPoint
+ToPoint [\ID] Speed [\V] | [\T] Tool [\WObj]
+SearchL [\Stop] | [\PStop] | [\Sup] Signal SearchPoint ToPoint
+[\ID] Speed [\V] | [\T] Tool [\WObj]
+Set
+Signal
+SetAllDataVal
+SetAO
+Type [\TypeMod] [\Object] [\Hidden] Value
+Signal Value
+SetDataSearch Type [\TypeMod] [\Object] [\PersSym] [\VarSym]
+[\ConstSym] [\InTask] | [\InMod] [\InRout]
+ 
+73
+ 
+[\GlobalSym] | [\LocalSym]
+SetDataVal
+Object [\Block] Value
+SetDO [\SDelay] Signal Value
+SetGO Signal Value
+SetSysData
+SingArea
+SourceObject [\ObjectName]
+[\Wrist] | [\Arm] | [\Off]
+SkipWarn
+SocketAccept Socket ClientSocket [\ClientAddress] [ \Time ]
+SocketBind Socket LocalAddress LocalPort
+SocketClose Socket
+SocketConnect Socket Address Port [\Time]
+SocketCreate
+Socket
+SocketListen Socket
+SocketReceive Socket [ \Str ] | [ \RawData ] | [ \Data ] [\NoRecBytes]
+[\Time]
+SoftAct
+SoftDeact
+Axis Softness [\Ramp]
+[\Ramp]
+SpcCon Descr Status [\GrpSize] [\Teach] [\Strict] [\Header]
+[\BackupFile]
+SpcDiscon Descr
+SpcDump
+SpcRead
+SpcStat
+74
+ 
+© Copyright 2004-2007 ABB. All rights reserved.
+SocketSend Socket [ \Str ] | [ \RawData ] | [ \Data] [ \NoOfBytes ]
+ 
+SpeedRefresh
+Override
+SpotJ
+SpotL ToPoint Speed Spot [\InPos] [\NoConc] [\Retract] Gun
+Tool [\WObj]
+SpotML
+SpyStart
+File
+SpyStop
+StartLoad [\Dynamic] FilePath [\File] LoadNo
+StartMove [\AllMotionTasks]
+StartMoveRetry
+StepBwdPath
+StepLength StepTime
+SToolRotCalib
+RefTip ZPos XPos Tool
+SToolTCPCalib
+Stop
+Pos1 Pos2 Pos3 Pos4 Tool MaxErr MeanErr
+[\NoRegain] | [\AllMoveTasks]
+[\Quick][\AllMotionTasks]
+StorePath StopMove [\KeepSync]
+SyncMoveOff SyncID [\TimeOut]
+SyncMoveOn SyncID TaskList [\TimeOut]
+SyncMoveSuspend
+SyncMoveResume
+SyncMoveUndo
+SyncToSensor
+Mecunt [On/Off]
+SystemStopAction
+TEST
+ 
+Test data
+[\Stop] [\StopBlock] [\Halt]
+{CASE
+Test value
+{, Test value} : ...}
+75
+ 
+[ DEFAULT: ...]
+ENDTEST
+TestSignDefine
+Channel SignalId MechUnit Axis SampleTime
+TestSignReset
+TextTabInstall
+File
+TPErase
+TPReadFK Answer String FK1 FK2 FK3 FK4 FK5
+[\MaxTime] [\DIBreak] [\DOBreak] [\BreakFlag]
+TPReadNum Answer String [\MaxTime] [\DIBreak] [\DOBreak]
+[\BreakFlag]
+TPShow Window
+TPWrite String [\Num] | [\Bool] | [\Pos] | [\Orient]
+TriggC CirPoint ToPoint [\ID] Speed [\T] Trigg_1 [\T2] [\T3]
+[\T4] [\T5] [\T6] [\T7] [\T8] Zone Tool [\WObj]
+TriggCheckIO TriggData Distance [\Start] | [\Time] Signal
+Relation CheckValue [\StopMove] Interrupt
+TriggEqip
+TriggData Distance [\Start] | [\Time] Interrupt
+TriggIO TriggData Distance
+[\Start] | [\Time] [\DOp] | [\GOp] | [\AOp] SetValue
+[\DODelay] | [\AORamp]
+TriggJ ToPoint [\ID] Speed [\T] Trigg_1 [\T2] [\T3] [\T4]
+[\T5] [\T6] [\T7] [\T8] Zone Tool [\WObj]
+TriggL ToPoint [\ID] Speed [\T] Trigg_1 [\T2] [\T3] [\T4]
+[\T5] [\T6] [\T7] [\T8] Zone Tool [\WObj]
+TriggRampAO TriggData Distance [\Start] EquipLag AOutput SetValue
+RampLength [\Time]
+TriggSpeed TriggData Distance [\Start] ScaleLag AO
+ScaleValue [\DipLag] [\ErrDO] [\Inhib]
+TriggStopProc
+76
+RestartRef [\DO1] [\GO1] [\GO2] [\GO3] [\GO4]
+ 
+© Copyright 2004-2007 ABB. All rights reserved.
+TriggInt
+ 
+ShadowDO
+TryInt DataObj
+TuneReset
+TuneServo
+MecUnit Axis TuneValue [\Type]
+UIMsgBox [\Header] MsgLine1 [\MsgLine2] [\MsgLine3]
+[MsgLine4] [\MsgLine5] [\Wrap] [\Buttons] [\Icon] [\Image]
+[\Result] [\MaxTime] [\DIBreak] [\DOBreak] [\BreakFlag]
+UIShow AssemblyName TypeName [\InitCmd] [\InstanceId]
+[\Status] [\NoCloseBtn]
+UnLoad
+[\ErrIfChanged] | [\Save] FilePath [\File]
+UnpackRawBytes RawData [\Network] StartIndex Value
+[\Hex1] | [\IntX] | [\Float4] | [\ASCII]
+WaitDI Signal Value [\MaxTime] [\TimeFlag]
+WaitDO
+Signal Value [\MaxTime] [\TimeFlag]
+WaitLoad
+WaitSensor
+[\TimeFlag]
+[\UnloadPath] [\UnloadFile] LoadNo
+Mecunt[ \RelDist ] [ \PredTime] [\MaxTime]
+WaitSyncTask
+SyncID TaskList [\TimeOut]
+WaitTime [\InPos] Time
+WaitUntil [\InPos] Cond [\MaxTime] [\TimeFlag] [\PollRate]
+WaitWObj
+WObj [\RelDist]
+WarmStart
+VelSet
+Override Max
+WHILE Condition
+ENDWHILE
+WorldAccLim
+Write
+ 
+DO ...
+[\On] | [\Off]
+IODeviceString [\Num] | [\Bool] | [\Pos] | [\Orient]
+77
+ 
+[\NoNewLine]
+WriteAnyBin
+WriteBin
+IODevice Data
+IODevice Buffer NChar
+WriteCfgData
+InstancePath Attribute CfgData [\ListNo]
+WriteRawBytes
+WriteStrBin
+IODevice RawData [\NoOfBytes]
+IODevice Str
+WZBoxDef [\Inside] | [\Outside] Shape LowPoint HighPoint
+WZCylDef [\Inside] | [\Outside] Shape CentrePoint Radius Height
+WZDisable WorldZone
+WZDOSet [\Temp] | [\Stat] WorldZone [\Inside] | [\Before] Shape
+Signal SetValue
+WZEnable
+WorldZone
+WZHomeJointDef
+DeltaJointVal
+WZLimJointDef
+HighJointVal
+[\Inside] | [\Outside] Shape MiddleJointVal
+[\Inside] | [\Outside] Shape LowJointVal
+WZLimSup WZSphDef 
+78
+[\Temp] | [\Stat] WorldZone Shape
+[\Inside] | [\Outside] Shape CentrePoint Radius
+ 
+© Copyright 2004-2007 ABB. All rights reserved.
+WZFree
+WorldZone
+ 
+19.2 Functions
+Abs
+(Input)
+
