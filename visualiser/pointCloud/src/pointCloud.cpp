@@ -12,7 +12,7 @@ float x = 0.0, y = 0.0, z = 0.0, a = 0.0;
 
 int main( int argc, char** argv )
 {
-	ros::init(argc, argv, "points_and_lines");
+	ros::init(argc, argv, "pointCloud");
 	ros::NodeHandle n;
 
 	//Publish

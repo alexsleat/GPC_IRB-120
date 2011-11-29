@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     
 	//init this
 	ros::init(argc, argv, "injectPoints");
-	
+
 	//Set up node handle
 	ros::NodeHandle n;
 
@@ -28,15 +28,14 @@ int main(int argc, char **argv)
 	std_msgs::Float32 pointA;
 
 	//get all cmd line arguments, seems to need to be int can't do float :(
-	
 	int x, y, z, a;
 
 	//some reason, this seems to need a new nodehandle with the squiggly?
-	ros::NodeHandle nh("~");
-	nh.getParam("X", x);
-	nh.getParam("Y", y);
-	nh.getParam("Z", z);
-	nh.getParam("A", a);
+	//ros::NodeHandle nh("~");
+	n.getParam("X", x);
+	n.getParam("Y", y);
+	n.getParam("Z", z);
+	n.getParam("A", a);
 
 	//since it's only taking in int, divide by 100, so 100 = 1.0, 10 = 0.1, 1 = 0.01.
 
@@ -44,6 +43,12 @@ int main(int argc, char **argv)
 	pointY.data = float(y) / 100;
 	pointZ.data = float(z) / 100;
 	pointA.data = float(a) / 100;
+
+	//wtf
+
+	sleep(1);	
+
+	//scanf("%d", &a);
 
 	//publish all the things!
 
@@ -59,3 +64,4 @@ int main(int argc, char **argv)
 	//}
 
 }
+
