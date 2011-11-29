@@ -10,11 +10,14 @@ int main( int argc, char** argv )
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 10);
 
   ros::Rate r(30);
+	
 
-  uint32_t i = 0;
+  float x = 0.1, y = 0.1, z = 0.1;
+
   float f = 0.0;
-  while (ros::ok())
-  {
+
+ 
+
 
     visualization_msgs::Marker points;
     points.header.frame_id = "/my_frame";
@@ -27,41 +30,32 @@ int main( int argc, char** argv )
 
     points.type = visualization_msgs::Marker::POINTS;
 
+
     // POINTS markers use x and y scale for width/height respectively
     points.scale.x = 0.2;
     points.scale.y = 0.2;
 
     // Points are green
-    points.color.g = 1.0f;
+    points.color.g = 1.0;
     points.color.a = 1.0;
 
-    // Create the vertices for the points and lines
-  //  for (uint32_t i = 0; i < 1000; ++i)
-  //  {
-      float y = 5 * sin(f + i / 100.0f * 2 * M_PI);
-      float z = 5 * cos(f + i / 100.0f * 2 * M_PI);
+   geometry_msgs::Point p;
+  while (ros::ok())
+  {
+    p.x = x;
+    p.y = y;
+    p.z = z;
 
-      geometry_msgs::Point p;
-      p.x = (int32_t)i / 10;
-      p.y = y;
-      p.z = z;
+	x = x + 0.01;
+	y = y + 0.01;
+	z = z + 0.01;
 
-      points.points.push_back(p);
-
-      if( i == 500){
-	i = 0;
-}
-
-      // The line list needs two points for each line
-      //p.z += 1.0;
-      i++;
-
-   // }
+    points.points.push_back(p);
 
 
     marker_pub.publish(points);
 
-    //r.sleep();
+    r.sleep();
 
     f += 0.04;
   }

@@ -1,0 +1,16 @@
+<package>
+  <description brief="pointCloud">
+
+     pointCloud
+
+  </description>
+  <author>Alex</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/pointCloud</url>
+  <depend package="roscpp"/>
+  <depend package="visualization_msgs"/>
+
+</package>
+
+
