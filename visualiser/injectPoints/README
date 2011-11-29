@@ -1,0 +1,8 @@
+Run using the following:
+
+rosrun injectPoints inject _X:=100 _Y:=10 _Z:=1 _A:=100
+
+_X, _Y, _Z = xyz position
+_A = alpha of points
+
+It's only taking in int values and not float (which it wants) so 1 = 0.001, 10 = 0.10, 100 = 1.0 etc.
