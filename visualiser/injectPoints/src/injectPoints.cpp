@@ -31,11 +31,11 @@ int main(int argc, char **argv)
 	int x, y, z, a;
 
 	//some reason, this seems to need a new nodehandle with the squiggly?
-	//ros::NodeHandle nh("~");
-	n.getParam("X", x);
-	n.getParam("Y", y);
-	n.getParam("Z", z);
-	n.getParam("A", a);
+	ros::NodeHandle nh("~");
+	nh.getParam("X", x);
+	nh.getParam("Y", y);
+	nh.getParam("Z", z);
+	nh.getParam("A", a);
 
 	//since it's only taking in int, divide by 100, so 100 = 1.0, 10 = 0.1, 1 = 0.01.
 
@@ -43,8 +43,6 @@ int main(int argc, char **argv)
 	pointY.data = float(y) / 100;
 	pointZ.data = float(z) / 100;
 	pointA.data = float(a) / 100;
-
-	//wtf
 
 	sleep(1);	
 

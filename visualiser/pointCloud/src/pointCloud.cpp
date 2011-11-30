@@ -1,7 +1,11 @@
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
+#include <pcl_ros/point_cloud.h>
+#include <pcl/point_types.h>
 
 #include "std_msgs/Float32.h"
+
+typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 
 void pointXCallback(const std_msgs::Float32::ConstPtr& pointX);
 void pointYCallback(const std_msgs::Float32::ConstPtr& pointY);
@@ -9,6 +13,7 @@ void pointZCallback(const std_msgs::Float32::ConstPtr& pointZ);
 void pointACallback(const std_msgs::Float32::ConstPtr& pointA);
 
 float x = 0.0, y = 0.0, z = 0.0, a = 0.0;
+float lock_x = 0.0, lock_y = 0.0, lock_z = 3.0, lock_a = 0.0;
 
 int main( int argc, char** argv )
 {
@@ -16,52 +21,57 @@ int main( int argc, char** argv )
 	ros::NodeHandle n;
 
 	//Publish
-	ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 10);
+	//ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 10);
+	ros::Publisher pub = n.advertise<PointCloud> ("tactip", 100);	
+
 	//Subscribe
 	ros::Subscriber pointX = n.subscribe("pointX", 100, pointXCallback);
 	ros::Subscriber pointY = n.subscribe("pointY", 100, pointYCallback);
 	ros::Subscriber pointZ = n.subscribe("pointZ", 100, pointZCallback);
 	ros::Subscriber pointA = n.subscribe("pointA", 100, pointACallback);
 
+	//Set loop rate (times per second)
 	ros::Rate r(30);
 
-	visualization_msgs::Marker points;
-	points.header.frame_id = "/my_frame";
-	points.header.stamp = ros::Time::now();
-	points.ns = "points";
-	points.action = visualization_msgs::Marker::ADD;
-	points.pose.orientation.w = 1.0;
+	PointCloud::Ptr msg (new PointCloud);
+	msg->header.frame_id = "gpc_frame";
+	msg->height = 1;
+	msg->width = 100;
+	msg->points.resize (msg->width * msg->height);
 
-	points.id = 0;
+	ros::spinOnce();
 
-	points.type = visualization_msgs::Marker::POINTS;
+	int counter = 0;
 
-
-	// POINTS markers use x and y scale for width/height respectively
-	points.scale.x = 0.2;
-	points.scale.y = 0.2;
-
-	// Points are green
-	points.color.g = 1.0;
-	points.color.a = 1.0;
-
-	//make a thing called p, it's a point holder
-	geometry_msgs::Point p;
+	ROS_INFO("Loop time");
 
 	while (ros::ok())
 	{
 
+		if(x != lock_x || y != lock_y || z != lock_z)
+		{
+			ROS_INFO("%d = x: %f, y: %f, z: %f",counter, x, y, z);
+
+			msg->points[counter].x = lock_x = x;	
+			msg->points[counter].y = lock_y = y;	
+			msg->points[counter].z = lock_z = z;	
+
+			counter ++;
+		}
+
+		msg->header.stamp = ros::Time::now ();
+		pub.publish(msg);
+		
 		ros::spinOnce();
-
-		p.x = x;
-		p.y = y;
-		p.z = z;
-
-		points.points.push_back(p);
-
-		marker_pub.publish(points);
-
 		r.sleep();
+
+		if(counter >= 99)
+		{
+	
+			return 0;
+		}
+
+
 	}
 }
 
