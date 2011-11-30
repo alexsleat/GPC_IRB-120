@@ -5,7 +5,7 @@
 
 #include "std_msgs/Float32.h"
 
-typedef pcl::PointCloud<pcl::PointXYZRGB> PointCloud;
+typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 
 void pointXCallback(const std_msgs::Float32::ConstPtr& pointX);
 void pointYCallback(const std_msgs::Float32::ConstPtr& pointY);
@@ -13,7 +13,7 @@ void pointZCallback(const std_msgs::Float32::ConstPtr& pointZ);
 void pointACallback(const std_msgs::Float32::ConstPtr& pointA);
 
 float x = 0.0, y = 0.0, z = 0.0, a = 0.0;
-float lock_x = 0.0, lock_y = 0.0, lock_z = 3.0, lock_a = 0.0;
+float lock_x = 0.0, lock_y = 0.0, lock_z = 0.0, lock_a = 0.0;
 
 int main( int argc, char** argv )
 {
@@ -35,35 +35,33 @@ int main( int argc, char** argv )
 
 	PointCloud::Ptr msg (new PointCloud);
 	msg->header.frame_id = "gpc_frame";
-	msg->height = 1;
+	msg->height = 100;
 	msg->width = 100;
-	msg->points.resize (msg->width * msg->height);
+	
+	msg->points.push_back (pcl::PointXYZ(x, y, z));	
+	msg->header.stamp = ros::Time::now ();
+	pub.publish(msg);
 
 	ros::spinOnce();
 
 	int counter = 0;
 
-	ROS_INFO("Loop time");
-
 	while (ros::ok())
 	{
 
-		if(x != lock_x || y != lock_y || z != lock_z)
+		if(x != lock_x)
 		{
-			ROS_INFO("%d = x: %f, y: %f, z: %f",counter, x, y, z);
+			ROS_INFO("x: %f, y: %f, z: %f", x, y, z);
 
-			msg->points[counter].x = lock_x = x;	
-			msg->points[counter].y = lock_y = y;	
-			msg->points[counter].z = lock_z = z;	
-			msg->points[counter].r = 0;
-			msg->points[counter].g = 10 * counter;
-			msg->points[counter].b = 0;
+			msg->points.push_back (pcl::PointXYZ(x, y, z));	
+			lock_x = x;
+			lock_y = y;
+			lock_z = z;
 
+			msg->header.stamp = ros::Time::now ();
+			pub.publish(msg);	 //el problem. the beef you're having, what is it?
 			counter ++;
 		}
-
-		msg->header.stamp = ros::Time::now ();
-		pub.publish(msg);
 		
 		ros::spinOnce();
 		r.sleep();

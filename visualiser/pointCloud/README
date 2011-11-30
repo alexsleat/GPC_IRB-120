@@ -1,0 +1,17 @@
+RViz setup:
+
+Global Options:
+
+	Fixed Frame 	- 	/gpc_frame
+	Target Frame 	- 	/gpc_frame
+	
+Point Cloud 2:
+
+	Topic		-	/tactip
+	Selectable	-	N/A
+	Style		-	N/A
+	Billboard Siz..	-	N/A
+	Alpha		-	1
+	Decay Time	-	0
+	Position Tran..	-	XYZ
+	Color Transfo..	-	RGB8
