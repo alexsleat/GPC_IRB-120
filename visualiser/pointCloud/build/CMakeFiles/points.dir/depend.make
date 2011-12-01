@@ -64,8 +64,10 @@ CMakeFiles/points.dir/src/pointCloud.o: /opt/ros/electric/stacks/ros_comm/client
 CMakeFiles/points.dir/src/pointCloud.o: /opt/ros/electric/stacks/ros_comm/clients/cpp/roscpp_traits/include/ros/service_traits.h
 CMakeFiles/points.dir/src/pointCloud.o: /opt/ros/electric/stacks/ros_comm/messages/std_msgs/include/std_msgs/header_deprecated_def.h
 CMakeFiles/points.dir/src/pointCloud.o: /opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ColorRGBA.h
-CMakeFiles/points.dir/src/pointCloud.o: /opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/Float32.h
+CMakeFiles/points.dir/src/pointCloud.o: /opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/Float32MultiArray.h
 CMakeFiles/points.dir/src/pointCloud.o: /opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/Header.h
+CMakeFiles/points.dir/src/pointCloud.o: /opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/MultiArrayDimension.h
+CMakeFiles/points.dir/src/pointCloud.o: /opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/MultiArrayLayout.h
 CMakeFiles/points.dir/src/pointCloud.o: /opt/ros/electric/stacks/ros_comm/tools/rosconsole/include/ros/assert.h
 CMakeFiles/points.dir/src/pointCloud.o: /opt/ros/electric/stacks/ros_comm/tools/rosconsole/include/ros/console.h
 CMakeFiles/points.dir/src/pointCloud.o: /opt/ros/electric/stacks/ros_comm/tools/rosconsole/include/ros/static_assert.h

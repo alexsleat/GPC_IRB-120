@@ -3,7 +3,12 @@
 
 #include "ros/ros.h"
 
-#include "std_msgs/Float32.h"
+#include "std_msgs/MultiArrayLayout.h"
+#include "std_msgs/MultiArrayDimension.h"
+
+#include "std_msgs/Float32MultiArray.h"
+
+float genRandFloat( float a, float b );
 
 int main(int argc, char **argv)
 {
@@ -15,51 +20,44 @@ int main(int argc, char **argv)
 	ros::NodeHandle n;
 
 	//Publish
-	ros::Publisher pointXMsg = n.advertise<std_msgs::Float32>("pointX", 100);	//X pose
-	ros::Publisher pointYMsg = n.advertise<std_msgs::Float32>("pointY", 100);	//Y pose
-	ros::Publisher pointZMsg = n.advertise<std_msgs::Float32>("pointZ", 100);	//Z pose
-	ros::Publisher pointAMsg = n.advertise<std_msgs::Float32>("pointA", 100);	//alpha
+	ros::Publisher pub = n.advertise<std_msgs::Float32MultiArray>("array", 100);
 
 	//set up variables to be published
+	std_msgs::Float32MultiArray array;
 
-	std_msgs::Float32 pointX;
-	std_msgs::Float32 pointY;
-	std_msgs::Float32 pointZ;
-	std_msgs::Float32 pointA;
+	ros::Rate r(30);
 
-	//get all cmd line arguments, seems to need to be int can't do float :(
-	int x, y, z, a;
+	while (ros::ok())
+	{
 
-	//some reason, this seems to need a new nodehandle with the squiggly?
-	ros::NodeHandle nh("~");
-	nh.getParam("X", x);
-	nh.getParam("Y", y);
-	nh.getParam("Z", z);
-	nh.getParam("A", a);
+		//Clear array
+		array.data.clear();
 
-	//since it's only taking in int, divide by 100, so 100 = 1.0, 10 = 0.1, 1 = 0.01.
+		array.data.push_back(genRandFloat(0.0, 3.0));	//x
+		array.data.push_back(genRandFloat(0.0, 3.0));	//y
+		array.data.push_back(genRandFloat(0.0, 3.0));	//z
 
-	pointX.data = float(x) / 100;
-	pointY.data = float(y) / 100;
-	pointZ.data = float(z) / 100;
-	pointA.data = float(a) / 100;
+		array.data.push_back(genRandFloat(0.0, 225.0));	//r
+		array.data.push_back(genRandFloat(0.0, 255.0));	//g
+		array.data.push_back(genRandFloat(0.0, 255.0));	//b
+	
+		//Publish array
+		pub.publish(array);
+		//Let the world know
+		ROS_INFO("I published something!");
+		//Do this.
+		ros::spinOnce();
+		//Added a delay so not to spam
+		r.sleep();
+
+	}
 
 	sleep(1);	
 
-	//scanf("%d", &a);
+}
 
-	//publish all the things!
-
-	pointXMsg.publish(pointX);
-	pointYMsg.publish(pointY);
-	pointZMsg.publish(pointZ);
-	pointAMsg.publish(pointA);
-
-	//Let the world know
-	ROS_INFO("X: %f, Y: %f, Z: %f, A: %f", pointX.data, pointY.data, pointZ.data, pointA.data);
-	//Do this.
-	ros::spinOnce();
-	//}
-
+float genRandFloat( float a, float b )
+{
+    return ( (b-a)*( (float)rand() / RAND_MAX ) )+a;
 }
 

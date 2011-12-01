@@ -3,17 +3,20 @@
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
 
-#include "std_msgs/Float32.h"
+#include "std_msgs/MultiArrayLayout.h"
+#include "std_msgs/MultiArrayDimension.h"
+#include "std_msgs/Float32MultiArray.h"
+
+#define MAX_POINTS 999
 
 typedef pcl::PointCloud<pcl::PointXYZRGB> PointCloud;
 
-void pointXCallback(const std_msgs::Float32::ConstPtr& pointX);
-void pointYCallback(const std_msgs::Float32::ConstPtr& pointY);
-void pointZCallback(const std_msgs::Float32::ConstPtr& pointZ);
-void pointACallback(const std_msgs::Float32::ConstPtr& pointA);
+float Arr[6];
 
-float x = 0.0, y = 0.0, z = 0.0, a = 0.0;
-float lock_x = 0.0, lock_y = 0.0, lock_z = 3.0, lock_a = 0.0;
+void arrayCallback(const std_msgs::Float32MultiArray::ConstPtr& array);
+
+float x = 0.0, y = 0.0, z = 0.0;
+float lock_x = 0.0, lock_y = 0.0, lock_z = 3.0;
 
 int main( int argc, char** argv )
 {
@@ -25,10 +28,7 @@ int main( int argc, char** argv )
 	ros::Publisher pub = n.advertise<PointCloud> ("tactip", 100);	
 
 	//Subscribe
-	ros::Subscriber pointX = n.subscribe("pointX", 100, pointXCallback);
-	ros::Subscriber pointY = n.subscribe("pointY", 100, pointYCallback);
-	ros::Subscriber pointZ = n.subscribe("pointZ", 100, pointZCallback);
-	ros::Subscriber pointA = n.subscribe("pointA", 100, pointACallback);
+	ros::Subscriber sub3 = n.subscribe("array", 100, arrayCallback);
 
 	//Set loop rate (times per second)
 	ros::Rate r(30);
@@ -36,39 +36,44 @@ int main( int argc, char** argv )
 	PointCloud::Ptr msg (new PointCloud);
 	msg->header.frame_id = "gpc_frame";
 	msg->height = 1;
-	msg->width = 100;
+	msg->width = MAX_POINTS;
 	msg->points.resize (msg->width * msg->height);
 
 	ros::spinOnce();
 
 	int counter = 0;
 
-	ROS_INFO("Loop time");
-
 	while (ros::ok())
 	{
 
+		x = Arr[0];
+		y = Arr[1];
+		z = Arr[2];
+		//don't add another point if it's the same as the last one. This should reduce the amount of memory wasted.
 		if(x != lock_x || y != lock_y || z != lock_z)
 		{
-			ROS_INFO("%d = x: %f, y: %f, z: %f",counter, x, y, z);
+			ROS_INFO("%d = x: %f, y: %f, z: %f, r: %d, g: %d, b: %d",counter, x, y, z, int(Arr[3]), int(Arr[4]), int(Arr[5]));
 
 			msg->points[counter].x = lock_x = x;	
 			msg->points[counter].y = lock_y = y;	
-			msg->points[counter].z = lock_z = z;	
-			msg->points[counter].r = 0;
-			msg->points[counter].g = 10 * counter;
-			msg->points[counter].b = 0;
+			msg->points[counter].z = lock_z = z;
+	
+			msg->points[counter].r = int(Arr[3]);
+			msg->points[counter].g = int(Arr[4]);
+			msg->points[counter].b = int(Arr[5]);
+
+			msg->header.stamp = ros::Time::now ();
+			pub.publish(msg);
 
 			counter ++;
 		}
 
-		msg->header.stamp = ros::Time::now ();
-		pub.publish(msg);
+
 		
 		ros::spinOnce();
 		r.sleep();
 
-		if(counter >= 99)
+		if(counter >= MAX_POINTS)
 		{
 	
 			return 0;
@@ -82,38 +87,18 @@ int main( int argc, char** argv )
 ** Returns the X Pose				**
 *************************************************/
 
-void pointXCallback(const std_msgs::Float32::ConstPtr& pointX)
+void arrayCallback(const std_msgs::Float32MultiArray::ConstPtr& array)
 {
-	x = pointX->data;
-	return;
-}
 
-/*************************************************
-** Returns the Y Pose				**
-*************************************************/
+	int i = 0;
+	// print all the remaining numbers
+	for(std::vector<float>::const_iterator it = array->data.begin(); it != array->data.end(); ++it)
+	{
+		Arr[i] = *it;
+		i++;
+	}
 
-void pointYCallback(const std_msgs::Float32::ConstPtr& pointY)
-{
-	y = pointY->data;
-	return;
-}
+	
 
-/*************************************************
-** Returns the Z Pose				**
-*************************************************/
-
-void pointZCallback(const std_msgs::Float32::ConstPtr& pointZ)
-{
-	z = pointZ->data;
-	return;
-}
-
-/*************************************************
-** Returns the A Pose				**
-*************************************************/
-
-void pointACallback(const std_msgs::Float32::ConstPtr& pointA)
-{
-	a = pointA->data;
 	return;
 }

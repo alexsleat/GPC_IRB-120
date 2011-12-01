@@ -15,8 +15,12 @@ pcl_ros/point_cloud.h
 -
 pcl/point_types.h
 -
-std_msgs/Float32.h
-/home/alex/GPC_IRB-120/visualiser/pointCloud/src/std_msgs/Float32.h
+std_msgs/MultiArrayLayout.h
+/home/alex/GPC_IRB-120/visualiser/pointCloud/src/std_msgs/MultiArrayLayout.h
+std_msgs/MultiArrayDimension.h
+/home/alex/GPC_IRB-120/visualiser/pointCloud/src/std_msgs/MultiArrayDimension.h
+std_msgs/Float32MultiArray.h
+/home/alex/GPC_IRB-120/visualiser/pointCloud/src/std_msgs/Float32MultiArray.h
 
 /opt/ros/electric/stacks/common_msgs/geometry_msgs/msg_gen/cpp/include/geometry_msgs/Point.h
 string
@@ -908,7 +912,7 @@ ros/macros.h
 ros/assert.h
 /opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/assert.h
 
-/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/Float32.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/Float32MultiArray.h
 string
 -
 vector
@@ -929,6 +933,8 @@ ros/macros.h
 /opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/macros.h
 ros/assert.h
 /opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/assert.h
+std_msgs/MultiArrayLayout.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/std_msgs/MultiArrayLayout.h
 
 /opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/Header.h
 string
@@ -953,6 +959,52 @@ ros/assert.h
 /opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/assert.h
 std_msgs/header_deprecated_def.h
 -
+
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/MultiArrayDimension.h
+string
+-
+vector
+-
+map
+-
+ostream
+-
+ros/serialization.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/serialization.h
+ros/builtin_message_traits.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/builtin_message_traits.h
+ros/message_operations.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/message_operations.h
+ros/time.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/time.h
+ros/macros.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/macros.h
+ros/assert.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/assert.h
+
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/MultiArrayLayout.h
+string
+-
+vector
+-
+map
+-
+ostream
+-
+ros/serialization.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/serialization.h
+ros/builtin_message_traits.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/builtin_message_traits.h
+ros/message_operations.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/message_operations.h
+ros/time.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/time.h
+ros/macros.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/macros.h
+ros/assert.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/assert.h
+std_msgs/MultiArrayDimension.h
+/opt/ros/electric/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/std_msgs/MultiArrayDimension.h
 
 /opt/ros/electric/stacks/ros_comm/tools/rosconsole/include/ros/assert.h
 ros/console.h
