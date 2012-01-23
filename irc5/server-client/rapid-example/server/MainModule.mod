@@ -5,6 +5,19 @@ MODULE MainModule
 	VAR string send_string;
 	VAR bool keep_listening := TRUE;
 	VAR bool main_loop := TRUE;
+	VAR bool stest := FALSE;
+	
+	VAR robtarget p1;
+	VAR pos pp1;
+	VAR string x;
+	VAR string y;
+	VAR string z;
+	
+	VAR orient Ori;
+	VAR string q1;
+	VAR string q2;
+	VAR string q3;
+	VAR string q4;
 
 	PROC main()
 	
@@ -24,10 +37,24 @@ MODULE MainModule
 			SocketSend client_socket \Str:="ACK: " + received_string;
 
 			!fix this yo.
-			!IF received_string = "sysInfo"
-			!	send_string := IsSysId();
-			!	SocketSend client_socket \Str:= send_string;	
-	
+			IF received_string = "trans"
+				
+				
+				p1 := CRobT(\Tool:=tool0 \WObj:=wobj0 ); !tool0 and WObj should be the current setting, they might not always be these!
+				pp1:= p1.trans; !trans is the translation of the current position
+				x:= NumToStr(pp1.x, 4);
+				y:= NumToStr(pp1.y, 4);
+				z:= NumToStr(pp1.z, 4);
+				SocketSend client_socket \Str:= "trans," + x + "," + y + "," + z + " " ;
+				
+			IF received_string = "orient"
+				p1 := CRobT(\Tool:=tool0 \WObj:=wobj0 ); !tool0 and WObj should be the current setting, they might not always be these!
+				Ori:= p1.rot;
+				q1:= NumToStr(Ori.q1, 4);
+				q2:= NumToStr(Ori.q2, 4);
+				q3:= NumToStr(Ori.q3, 4);
+				q4:= NumToStr(Ori.q4, 4);
+				SocketSend client_socket \Str:= "orient," + q1 + "," + q2 + "," + q3 + q4 + " " ;
 
 			IF received_string = "closeSocket"
 				main_loop := FALSE;

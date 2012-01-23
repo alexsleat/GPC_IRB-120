@@ -11,24 +11,29 @@ data = " ".join(sys.argv[1:])
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Connect to server
 sock.connect((HOST, PORT))
-for i in range(1,5):
+
+sock.send(data)
+
+while True:
 
 	#try:
 	    # and send data
-	sock.send(data)
-
+	
 	    # Receive data from the server and shut down
 	received = sock.recv(1024)
-	print "Iteration ", i, ":"
+	#print "Iteration ", i, ":"
 	print "\tSent: " , data
 	print "\tRecieved: ", received
+	
+	if received == "closeClient ":
+		print "hi"
+		break		
 
-else:
-	#finally:
-	print "sleepytime"
-	time.sleep(5)
-	print "fin"
-	sock.send("closeSocket")
-	time.sleep(5)
-	sock.close()
+#finally:
+print "sleepytime"
+time.sleep(1)
+print "fin"
+sock.send("closeSocket")
+time.sleep(1)
+sock.close()
 
