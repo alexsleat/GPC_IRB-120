@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+import roslib; roslib.load_manifest('rosclient')
+import rospy
+from std_msgs.msg import Int32
+def talker():
+    pub = rospy.Publisher('server_spammer', Int32)
+    rospy.init_node('talker')
+    while not rospy.is_shutdown():
+        int = "hello world"
+        rospy.loginfo(int)
+        pub.publish(Int32(int))
+        rospy.sleep(1.0)
+if __name__ == '__main__':
+    try:
+        talker()
+    except rospy.ROSInterruptException: pass

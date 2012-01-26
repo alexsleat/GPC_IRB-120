@@ -3,43 +3,53 @@
 import roslib; roslib.load_manifest('rosclient')
 import rospy
 
-#This stuff isn't in rospy, it's from normal python, will this work?
 import socket
 import sys
 import time
 
-HOST, PORT = "192.168.125.1", 1025
-data = " ".join(sys.argv[1:])
+# subscribe
+from std_msgs.msg import String
+def callback(data):
+	#rospy.loginfo("server_spammer: %s",data.data)
+	#if send_flag is set, send the data
+	sendData(data.data)
 
-print "Hi"
+def listener():
+	rospy.init_node('listener', anonymous=True)
+	rospy.Subscriber("server_spammer", String, callback)
+	rospy.spin()
 
-# Create a socket (SOCK_STREAM means a TCP socket)
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# Connect to server
-sock.connect((HOST, PORT))
-
-sock.send(data)
-
-while True:
-
-	#try:
-	    # and send data
-	
-	    # Receive data from the server and shut down
+def sendData(sendPacket):
+		
+	# send data
+	print "send packet"
+	sock.send(sendPacket)
+	# Receive data from the server
+	print "receive packet"
 	received = sock.recv(1024)
-	#print "Iteration ", i, ":"
-	print "\tSent: " , data
-	print "\tRecieved: ", received
-	
-	if received == "closeClient ":
-		print "hi"
-		break		
+	#check received data against the sent stuff.
+	if sendPacket == received:
+		print "\tData OK!"	
 
-#finally:
-print "sleepytime"
-time.sleep(1)
-print "fin"
-sock.send("closeSocket")
-time.sleep(1)
-sock.close()
+if __name__ == '__main__':
+
+# Set up sockets
+	print "starting socket"
+	HOST, PORT = "192.168.0.8", 1025
+	#data = ",".join(sys.argv[1:])
+	# Create a socket (SOCK_STREAM means a TCP socket)
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	# Connect to server
+	sock.connect((HOST, PORT))
+
+# will end up in the callback loop, so stuff happens there
+	listener()
+
+#Close down (ctrl+c should do this!)
+	print "sleepytime"
+	time.sleep(0.1)
+	print "fin"
+	sock.send("closeSocket")
+	time.sleep(0.1)
+	sock.close()
 
