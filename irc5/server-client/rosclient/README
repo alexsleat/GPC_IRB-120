@@ -1,0 +1,10 @@
+This is the python client, altered for ROS.
+
+What it should do:
+
+It should subscribe to a string and a flag.
+	the flag should be set when the string has been passed to this node
+	the flag should reset once the client has sent the string over the socket
+It should publish the ack
+	when the socket returns an acknoledgement it should publish this
+It should publish any other data passed back to it.
