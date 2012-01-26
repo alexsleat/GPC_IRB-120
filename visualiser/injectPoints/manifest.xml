@@ -1,0 +1,15 @@
+<package>
+  <description brief="injectPoints">
+
+     injectPoints
+
+  </description>
+  <author>Alex</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/injectPoints</url>
+  <depend package="roscpp"/>
+
+</package>
+
+
