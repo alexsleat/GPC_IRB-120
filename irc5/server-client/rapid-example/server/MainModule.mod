@@ -3,6 +3,7 @@ MODULE MainModule
 	VAR socketdev client_socket;
 	VAR string received_string;
 	VAR string send_string;
+	VAR string temp_string;
 	VAR bool keep_listening := TRUE;
 	VAR bool main_loop := TRUE;
 	VAR bool stest := FALSE;
@@ -12,8 +13,13 @@ MODULE MainModule
 	VAR string q2;
 	VAR string q3;
 	VAR string q4;
+	
+	! Danger ZOne!
 
-	VAR string s_func{8};
+	VAR string s_func{8};			! output by parser()
+	VAR string subParserArray{8};		! output subParser()
+	VAR string robt_parserArr{17};		! output robt_parser()
+	
 	VAR num done_flag;
 
 	PROC main()
@@ -29,40 +35,51 @@ MODULE MainModule
 		WHILE main_loop DO
 
 			!Comm
-			SocketReceive client_socket \Str:=received_string;
-			TPWrite "Client wrote - " + received_string;
-			SocketSend client_socket \Str:="ACK: " + received_string;
+			FOR rcv FROM 1 TO 3 DO
+				SocketReceive client_socket \Str:=temp_string;
+				TPWrite "Client wrote - " + temp_string;
+				SocketSend client_socket \Str:="ACK: " + temp_string;
+				
+				received_string := received_string + temp_string;
+				
+			ENDFOR
+			
+			SocketSend client_socket \Str:=received_string;
 			
 			done_flag := parser();
-			SocketSend client_socket \Str:=s_func{2};
+			SocketSend client_socket \Str:=" ";
 
 			!fix this yo.
-			IF s_func{1} = "trans"
+			IF s_func{1} = "trans" THEN
 				
 				send_string := trans();
 				SocketSend client_socket \Str:= send_string;
 				
-			IF s_func{1} = "movej"
+			ELSEIF s_func{1} = "MoveJ_fc" THEN
 			
+				send_string := MoveJ_fc();
+				SocketSend client_socket \Str:= send_string;
 				
-				
-				SocketSend client_socket \Str:= "movej";
-								
-			!IF received_string = "orient"
-			!	p1 := CRobT(\Tool:=tool0 \WObj:=wobj0 ); !tool0 and WObj should be the current setting, they might not always be these!
-			!	Ori:= p1.rot;
-			!	q1:= NumToStr(Ori.q1, 4);
-			!	q2:= NumToStr(Ori.q2, 4);
-			!	q3:= NumToStr(Ori.q3, 4);
-			!	q4:= NumToStr(Ori.q4, 4);
-			!	SocketSend client_socket \Str:= "orient," + q1 + "," + q2 + "," + q3 + q4 + " " ;
+				FOR this FROM 1 TO 17 DO
+					SocketSend client_socket \Str:= ValToStr(robt_parserArr{this})  + " ";
+				ENDFOR
+					
+				FOR this FROM 1 TO 4 DO
+					SocketSend client_socket \Str:= ValToStr(subParserArray{8})  + " ";
+				ENDFOR	
+					
+				SocketSend client_socket \Str:= "END";
 
-			IF s_func{1} = "closeSocket"
+			ELSEIF s_func{1} = "closeSocket" THEN
 				main_loop := FALSE;
 				
+			ELSE
+				SocketSend client_socket \Str:= "Fail";	
 				
 			!Clear received_string for the next pass.
 			received_string:= "";
+			
+			ENDIF
 
 		ENDWHILE
 
@@ -75,7 +92,11 @@ MODULE MainModule
 		SocketClose temp_socket;
 		
 	ENDPROC
-	
+! **********************************************************************************************************************************
+! $ parser for dolla signs
+!
+!	We use $ to seperate command lists in the TCP/IP string sent from the client, this splits them up.
+!	
 	FUNC num parser()
 	
 		!VAR string s_func{8};
@@ -96,7 +117,7 @@ MODULE MainModule
 		
 			temp := StrPart(received_string, string_pos, 1);		! Set temp to the current posistion in the string
 		
-			IF temp = "," THEN	
+			IF temp = "#" THEN	
 				var_pos := var_pos + 1;			
 			ELSE
 				s_func{var_pos} := s_func{var_pos} + temp;		!probs not corret synatx
@@ -111,8 +132,100 @@ MODULE MainModule
 		RETURN 1;
 		
 	ENDFUNC
+
+! **********************************************************************************************************************************
+! , parser for commas
+!
+!	Will usually be for strings which contain a bunch of values seperated by commas
+!
+	FUNC num subParser(string inString)
 	
+		!VAR string s_func{8};
+		VAR num inString_len;
+		
+		VAR num var_pos	:= 1;		! Which is the current variable we're using.		
+		VAR num string_pos := 1;	! Where in the string of the current var it is
+		
+		VAR string temp;
+		
+		!loop string by each char
+		inString_len := StrLen(inString);
+		
+		FOR looper FROM 1 TO inString_len DO			! Loop each character in the string
+		
+			IF string_pos = inString_len
+				string_pos := string_pos - 1;
+		
+			temp := StrPart(inString, string_pos, 1);		! Set temp to the current posistion in the string
+		
+			IF temp = "," THEN	
+				var_pos := var_pos + 1;			
+			ELSE
+				subParserArray{var_pos} := subParserArray{var_pos} + temp;		!build up a new array of seperated commands
+				
+			ENDIF
+			
+			string_pos := string_pos + 1;
+
+		ENDFOR
+		
+		!RETURN subParserArray{1};		! Return the split string (as an array)
+		RETURN 1;
+		
+	ENDFUNC	
 	
+! **********************************************************************************************************************************
+! , parser for robtarget
+!
+!	Will usually be for strings which contain a bunch of values seperated by commas
+!
+!	will come in "[x,y,z][-,-,-,-][-,-,-,-][-,-,-,-,-,-]"
+!	want them seperated
+!
+	FUNC num robtParser(string inString)
+	
+		!VAR string s_func{8};
+		VAR num inString_len;
+
+		VAR num var_pos	:= 1;		! Which is the current variable we're using.		
+		VAR num string_pos := 1;	! Where in the string of the current var it is
+		
+		VAR string temp;
+		
+		!loop string by each char
+		inString_len := StrLen(inString);
+		
+		FOR looper FROM 1 TO inString_len DO			! Loop each character in the string
+		
+			IF string_pos = inString_len
+				string_pos := string_pos - 1;
+		
+			temp := StrPart(inString, string_pos, 1);		! Set temp to the current posistion in the string
+		
+			IF temp = "," THEN	
+				var_pos := var_pos + 1;	
+			ELSEIF temp = "[" THEN
+				var_pos := var_pos + 1;
+			ELSEIF temp = "]" THEN
+				var_pos := var_pos + 1;		
+			ELSE
+				robt_parserArr{var_pos} := robt_parserArr{var_pos} + temp;		!build up a new array of seperated commands
+				
+			ENDIF
+			
+			string_pos := string_pos + 1;
+
+		ENDFOR
+		
+		!RETURN robt_parserArr{1};		! Return the split string (as an array)
+		RETURN 1;
+		
+	ENDFUNC	
+	
+! **********************************************************************************************************************************
+! trans function:
+!
+!		
 	FUNC string trans()
 	
 		VAR robtarget p1;
@@ -134,5 +247,96 @@ MODULE MainModule
 		RETURN trans_string;
 		
 	ENDFUNC
+! **********************************************************************************************************************************
+! MoveJ function:
+!
+!	
+	FUNC string MoveJ_fc()
+	
+		VAR string temp_string;	
+		VAR bool done;
+		VAR num temp_rob{17};
+		VAR robtarget pose;
+		VAR speeddata mj_speed;
+		VAR num zd_temp;
+		VAR zonedata mj_zone;
+		VAR num td_temp;
+		VAR tooldata mj_tool;
+		VAR num rP_flag;
+		VAR num temp_speed1;
+		VAR num temp_speed2;
+		VAR num temp_speed3;
+		VAR num temp_speed4;
 		
+		rP_flag := robtParser(s_func{2});
+		
+	!
+	! Convert string to robtarget, for the position data
+	!
+		
+		
+		
+		! Convert from string to num.
+		FOR this FROM 1 TO 17 DO
+		
+			done := StrToVal(robt_parserArr{this}, temp_rob{this});
+			
+			! something failed, should exit with an error.
+			IF done = FALSE
+				temp_string := "MoveJ_fc failed at itteration : " + ValToStr(this) + " of StrToVal";
+				RETURN temp_string;
+		ENDFOR
+		
+		! blast in those lovely new nums in to robtarget ;)
+		pose	:= [ 	[temp_rob{1}, temp_rob{2}, temp_rob{3}] ,						
+				[temp_rob{4}, temp_rob{5}, temp_rob{6}, temp_rob{7}] ,					
+				[temp_rob{8}, temp_rob{9}, temp_rob{10}, temp_rob{11}] 	,				
+				[temp_rob{12}, temp_rob{13}, temp_rob{14}, temp_rob{15}, temp_rob{16}, temp_rob{17}] ];	
+		
+	!
+	! Convert string to speeddata, does what it says on the tin.
+	!
+		
+		rP_flag := subParser(s_func{3});
+		
+		done := StrToVal(subParserArray{1}, temp_speed1);
+		done := StrToVal(subParserArray{2}, temp_speed2);
+		done := StrToVal(subParserArray{3}, temp_speed3);
+		done := StrToVal(subParserArray{4}, temp_speed4);
+		
+		mj_speed := [temp_speed1, temp_speed2, temp_speed3, temp_speed4];
+		
+	!
+	! Convert string to zonedata, ?
+	!
+		
+		
+		!done := StrToVal(s_func{4}, zd_temp);
+		!IF done = FALSE
+			!temp_string := "MoveJ_fc failed at StrToVal for zonedata";
+			!RETURN temp_string;
+		 !mj_zone := zd_temp;
+		
+	!
+	! Convert string to tooldata, info about the tool
+	!		
+		
+		
+		!done := StrToVal(s_func{4}, td_temp);
+		!IF done = FALSE
+			!temp_string := "MoveJ_fc failed at StrToVal for tooldata";
+			!RETURN temp_string;
+		 !mj_tool := td_temp;
+		
+	!
+	! Do the function call with all this lovely new data
+	!
+		
+		!MoveJ(mj_toPoint, mj_speed, mj_zone, mj_tool);
+		
+		temp_string := "MoveJ func: ";
+		
+		RETURN temp_string;
+		
+	ENDFUNC
 ENDMODULE
