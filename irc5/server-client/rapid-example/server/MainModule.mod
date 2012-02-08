@@ -70,6 +70,26 @@ MODULE MainModule
 					
 				SocketSend client_socket \Str:= "END";
 
+			ELSEIF s_func{1} = "CRobT_fc" THEN
+	
+				send_string := CRobT_fc();
+				SocketSend client_socket \Str:= send_string;
+
+			ELSEIF s_func{1} = "CPos_fc" THEN
+	
+				send_string := CPos_fc();
+				SocketSend client_socket \Str:= send_string;
+
+			ELSEIF s_func{1} = "CJointT_fc" THEN
+	
+				send_string := CJointT_fc();
+				SocketSend client_socket \Str:= send_string;
+
+			ELSEIF s_func{1} = "ReadMotor_fc" THEN
+	
+				send_string := ReadMotor_fc();
+				SocketSend client_socket \Str:= send_string;
+
 			ELSEIF s_func{1} = "closeSocket" THEN
 				main_loop := FALSE;
 				
@@ -338,5 +358,108 @@ MODULE MainModule
 		
 		RETURN temp_string;
 		
+	ENDFUNC
+!
+!CRobT Function
+!
+	FUNC string CRobT_fc()
+	
+		VAR robtarget p1;
+		VAR pos pp1;
+		VAR string x;
+		VAR string y;
+		VAR string z;
+		
+		VAR string CRobT_string;
+	
+		p1 := CRobT(\Tool:=tool0 \WObj:=wobj0 ); !tool0 and WObj should be the current setting, they might not always be these!
+		pp1:= p1.trans; !trans is the translation of the current position
+		x:= NumToStr(pp1.x, 4);
+		y:= NumToStr(pp1.y, 4);
+		z:= NumToStr(pp1.z, 4);
+		
+		!SocketSend client_socket \Str:= 
+		CRobT_string := "trans," + x + "," + y + "," + z + " " ;
+		RETURN CRobT_string;
+		
+	ENDFUNC
+	
+!
+!CPos Function
+!
+
+	FUNC string CPos_fc()
+	
+		VAR robtarget p1;
+		VAR pos pp1;
+		VAR string x;
+		VAR string y;
+		VAR string z;
+	
+		VAR string CPos_string;
+	
+		pp1 := CPos(\Tool:=tool0 \WObj:=wobj0 );
+		
+		x:= NumToStr(pp1.x, 4);
+		y:= NumToStr(pp1.y, 4);
+		z:= NumToStr(pp1.z, 4);
+		
+		!SocketSend client_socket \Str:= 
+		CPos_string := "Cpos," + x + "," + y + "," + z + " " ;
+	
+	RETURN CPos_string;
+		
+	ENDFUNC
+	
+!
+!CJointT function
+!
+
+	FUNC string CJointT_fc()
+	
+		VAR robtarget p1;
+		VAR jointtarget joints;
+		VAR pos pp1;
+		VAR robjoint rjoint;
+		VAR extjoint ejoint;
+		VAR string t;
+		VAR string CPos_string;
+	
+		joints:= CJointT(\TaskRef:=T_ROB2Id);
+		rjoint:= joints.robjoint;
+		
+		pp1:= p1.trans; !trans is the translation of the current position
+		x:= NumToStr(pp1.x, 4);
+		y:= NumToStr(pp1.y, 4);
+		z:= NumToStr(pp1.z, 4);
+		
+		!SocketSend client_socket \Str:= 
+		CPos_string := "Cpos," + x + "," + y + "," + z + " " ;
+	
+	RETURN CPos_string;
+		
+	ENDFUNC
+	
+	FUNC string ReadMotor_fc()
+		
+		VAR string motor_angle1;
+		VAR string motor_angle2;
+		VAR string motor_angle3;
+		VAR string motor_angle4;
+		VAR string motor_angle5;
+		VAR string motor_angle6;
+		
+		VAR string ReadMotor_string;
+		
+		motor_angle1 := NumToStr(ReadMotor(1),4);
+		motor_angle2 := NumToStr(ReadMotor(2),4);
+		motor_angle3 := NumToStr(ReadMotor(3),4);
+		motor_angle4 := NumToStr(ReadMotor(4),4);
+		motor_angle5 := NumToStr(ReadMotor(5),4);
+		motor_angle6 := NumToStr(ReadMotor(6),4);
+		
+		ReadMotor_string := "ReadMotor, " + motor_angle1 + "," + motor_angle2 + "," + motor_angle3 + "," + motor_angle4 + "," + motor_angle5 + motor_angle6 + " ";
+		
+	RETURN ReadMotor_string;
 	ENDFUNC
 ENDMODULE
