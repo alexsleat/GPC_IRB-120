@@ -20,16 +20,37 @@ def listener():
 	rospy.spin()
 
 def sendData(sendPacket):
-		
-	# send data
-	print "send packet"
-	sock.send(sendPacket)
-	# Receive data from the server
-	print "receive packet"
-	received = sock.recv(1024)
-	#check received data against the sent stuff.
-	if sendPacket == received:
-		print "\tData OK!"	
+
+
+	count = 0;
+	string1 = string2 = string3 = ''
+
+	for i in data:
+		count = count + 1
+		if count <= 70: 
+			string1 = string1 + i
+		elif count <= 140:
+			string2 = string2 + i
+		else:
+			string3 = string3 + i
+
+	print "String 1: " + string1
+	print "String 2: " + string2
+	print "String 3: " + string3
+
+	send_str = [string1, string2, string3]
+
+	#send data	
+
+	for i in 3:
+
+		sock.send(send_str[:i])
+		received = sock.recv(1024)
+		#print "Iteration ", i, ":"
+		print "\tSent: " , data
+		print "\tRecieved: ", received	
+		if send_str[:1] == received:
+			print "\t\tData OK!"
 
 if __name__ == '__main__':
 

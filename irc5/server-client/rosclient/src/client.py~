@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
 # Set up sockets
 	print "starting socket"
-	HOST, PORT = "192.168.0.8", 1025
+	HOST, PORT = "localhost", 1025
 	#data = ",".join(sys.argv[1:])
 	# Create a socket (SOCK_STREAM means a TCP socket)
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
