@@ -431,7 +431,7 @@ MODULE MainModule
 		VAR string t;
 		VAR string CPos_string;
 	
-		joints:= CJointT(\TaskRef:=T_ROB2Id);
+		joints:= CJointT(\TaskRef:=T_ROB1Id);
 		rjoint:= joints.robjoint;
 		
 		pp1:= p1.trans; !trans is the translation of the current position
@@ -508,7 +508,6 @@ MODULE MainModule
 		
 	ENDFUNC
 	
-	!
 	!Defines the payload for the robot
 	!Arg: GripLoad Load(loaddata)
 	!eg. GripLoad peice1;
@@ -526,30 +525,30 @@ MODULE MainModule
 		VAR string cog_string;
 		
 		VAR orient aom;
-		VAR aomq1;
-		VAR aomq2;
-		VAR aomq3;
-		VAR aomq4;
+		VAR string aomq1;
+		VAR string aomq2;
+		VAR string aomq3;
+		VAR string aomq4;
 		VAR string aom_string;
 		
 		VAR string ix;
 		VAR string iy;
 		VAR string iz;
-		VAR string inertia_sting;
+		VAR string inertia_string;
 		
 		VAR string final_string;
 		
 		!5kg
-		mass := NumToStr(5,4)
+		mass := NumToStr(5,4);
 		
 		!cog (x 50, y 0, z 50)
 		cog.x := 50;
 		cog.y := 0;
 		cog.z := 50;
 		
-		cogx := NumToString(cog.x);
-		cogy := NumToString(cog.y);
-		cogz := NumToString(cog.z);
+		cogx := NumToStr(cog.x,4);
+		cogy := NumToStr(cog.y,4);
+		cogz := NumToStr(cog.z,4);
 		cog_string := "[" + cogx + ", " + cogy + ", " + cogz + "], ";
 		
 		aom.q1 := 1;
@@ -557,21 +556,21 @@ MODULE MainModule
 		aom.q3 := 0;
 		aom.q4 := 0;
 		
-		aomq1 := NumToStr(aom.q1);
-		aomq2 := NumToStr(aom.q2);
-		aomq3 := NumToStr(aom.q3);
-		aomq4 := NumToStr(aom.q4);
+		aomq1 := NumToStr(aom.q1,4);
+		aomq2 := NumToStr(aom.q2,4);
+		aomq3 := NumToStr(aom.q3,4);
+		aomq4 := NumToStr(aom.q4,4);
 		aom_string := "[" + aomq1 + ", " + aomq2 + ", " + aomq3 + ", " + aomq4 + "], ";
 		
 		ix := "0";
 		iy := "0";
 		iz := "0";
-		inertia_string := "ix + ", " + iy + ", " + iz";
+		inertia_string := ix + ", " + iy + ", " + iz;
 		
 		!does the sting need ; at the end?
 		final_string := "GripLoad [" + mass + "," + cog_string + aom_string + inertia_String + ";";
 		
 		RETURN final_string;
-	ENDFUNC	
+	ENDFUNC
 	
 ENDMODULE
