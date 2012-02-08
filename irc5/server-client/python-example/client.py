@@ -19,29 +19,43 @@ count = 0;
 string1 = string2 = string3 = ''
 
 for i in data:
-	count = count + 1
+	
 	if count <= 70: 
 		string1 = string1 + i
 	elif count <= 140:
 		string2 = string2 + i
 	else:
 		string3 = string3 + i
+	count = count + 1
 
 print "String 1: " + string1
 print "String 2: " + string2
 print "String 3: " + string3
 
-send_str = [string1, string2, string3]
+sock.send(string1)
+received = sock.recv(1024)
+#print "Iteration ", i, ":"
+print "\tSent: " , data
+print "\tRecieved: ", received	
 
-# Send data
+if string2 == '':
+	string2 = '#0'
 
-for i in 3:
+sock.send(string2)
+received = sock.recv(1024)
+#print "Iteration ", i, ":"
+print "\tSent: " , data
+print "\tRecieved: ", received	
 
-	sock.send(send_str[:i])
-	received = sock.recv(1024)
-	#print "Iteration ", i, ":"
-	print "\tSent: " , data
-	print "\tRecieved: ", received	
+if string3 == '':
+	string3 = '#0'
+
+sock.send(string3)
+received = sock.recv(1024)
+#print "Iteration ", i, ":"
+print "\tSent: " , data
+print "\tRecieved: ", received	
+
 
 while True:
 
