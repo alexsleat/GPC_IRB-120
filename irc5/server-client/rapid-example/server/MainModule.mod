@@ -49,12 +49,14 @@ MODULE MainModule
 			done_flag := parser();
 			SocketSend client_socket \Str:=" ";
 
-			!fix this yo.
+	!Function select IF ELSEIF mess:
+	
+		! Trans func
 			IF s_func{1} = "trans" THEN
 				
 				send_string := trans();
 				SocketSend client_socket \Str:= send_string;
-				
+		! MoveJ func		
 			ELSEIF s_func{1} = "MoveJ_fc" THEN
 			
 				send_string := MoveJ_fc();
@@ -69,32 +71,47 @@ MODULE MainModule
 				ENDFOR	
 					
 				SocketSend client_socket \Str:= "END";
-
+		! CRobT func
 			ELSEIF s_func{1} = "CRobT_fc" THEN
 	
 				send_string := CRobT_fc();
 				SocketSend client_socket \Str:= send_string;
-
+		! CPos func
 			ELSEIF s_func{1} = "CPos_fc" THEN
 	
 				send_string := CPos_fc();
 				SocketSend client_socket \Str:= send_string;
-
+		! CJointT func
 			ELSEIF s_func{1} = "CJointT_fc" THEN
 	
 				send_string := CJointT_fc();
 				SocketSend client_socket \Str:= send_string;
-
+		! ReadMotor func
 			ELSEIF s_func{1} = "ReadMotor_fc" THEN
 	
 				send_string := ReadMotor_fc();
 				SocketSend client_socket \Str:= send_string;
-
+		! VelSet func				
+			ELSEIF s_func{1} = "VelSet" THEN
+	
+				send_string := VelSet();
+				SocketSend client_socket \Str:= send_string;
+		! AccSet func				
+			ELSEIF s_func{1} = "AccSet" THEN
+	
+				send_string := AccSet();
+				SocketSend client_socket \Str:= send_string;
+		! GripLoad func				
+			ELSEIF s_func{1} = "GripLoad" THEN
+	
+				send_string := GripLoad();
+				SocketSend client_socket \Str:= send_string;			
+		! Close Socket func
 			ELSEIF s_func{1} = "closeSocket" THEN
 				main_loop := FALSE;
-				
+		! Else Error.			
 			ELSE
-				SocketSend client_socket \Str:= "Fail";	
+				SocketSend client_socket \Str:= "Failed, function " + s_func{1} + " not declared.";	
 				
 			!Clear received_string for the next pass.
 			received_string:= "";
@@ -336,23 +353,12 @@ MODULE MainModule
 			!temp_string := "MoveJ_fc failed at StrToVal for zonedata";
 			!RETURN temp_string;
 		 !mj_zone := zd_temp;
-		
-	!
-	! Convert string to tooldata, info about the tool
-	!		
-		
-		
-		!done := StrToVal(s_func{4}, td_temp);
-		!IF done = FALSE
-			!temp_string := "MoveJ_fc failed at StrToVal for tooldata";
-			!RETURN temp_string;
-		 !mj_tool := td_temp;
-		
+			
 	!
 	! Do the function call with all this lovely new data
 	!
 		
-		!MoveJ(mj_toPoint, mj_speed, mj_zone, mj_tool);
+		!MoveJ(mj_toPoint, mj_speed, mj_zone, \Tool:=tool0);
 		
 		temp_string := "MoveJ func: ";
 		
@@ -434,7 +440,7 @@ MODULE MainModule
 		z:= NumToStr(pp1.z, 4);
 		
 		!SocketSend client_socket \Str:= 
-		CPos_string := "Cpos," + x + "," + y + "," + z + " " ;
+		CPos_string := "CJointT," + x + "," + y + "," + z + " " ;
 	
 	RETURN CPos_string;
 		
@@ -462,4 +468,110 @@ MODULE MainModule
 		
 	RETURN ReadMotor_string;
 	ENDFUNC
+	
+	!Changes programmed velocity
+	!Arg: VelSet Override(num) Max(num)
+	!eg. VelSet 50, 800;
+	FUNC string VelSet() 
+	
+		VAR string override;
+		VAR string max;
+		
+		VAR string final_string;
+		
+		override := s_func{1};
+		max := s_func{2};
+		
+		!does the sting need ; at the end?
+		final_string := "VelSet " + override + "," + max + ";";
+		
+		RETURN final_string;
+		
+	ENDFUNC
+	
+	!Reduces the acceleration
+	!Arg: AccSet Acc(num) Ramp(num)
+	!eg. AccSet 50, 100;
+	FUNC string AccSet() 
+	
+		VAR string acc;
+		VAR string ramp;
+		VAR string final_string;
+		
+		acc := s_func{1};
+		ramp := s_func{2};
+		
+		!does the sting need ; at the end?
+		final_string := "AccSet " + acc + "," + ramp + ";";
+		
+		RETURN final_string;
+		
+	ENDFUNC
+	
+	!
+	!Defines the payload for the robot
+	!Arg: GripLoad Load(loaddata)
+	!eg. GripLoad peice1;
+	FUNC string GripLoad() 
+	
+		!VAR loaddata load;
+		
+		!mass, cog, aom, toolload, payload, inertia x, inertia y, inertia z; 
+		VAR string mass;
+		
+		VAR pos cog;
+		VAR string cogx;
+		VAR string cogy;
+		VAR string cogz;
+		VAR string cog_string;
+		
+		VAR orient aom;
+		VAR aomq1;
+		VAR aomq2;
+		VAR aomq3;
+		VAR aomq4;
+		VAR string aom_string;
+		
+		VAR string ix;
+		VAR string iy;
+		VAR string iz;
+		VAR string inertia_sting;
+		
+		VAR string final_string;
+		
+		!5kg
+		mass := NumToStr(5,4)
+		
+		!cog (x 50, y 0, z 50)
+		cog.x := 50;
+		cog.y := 0;
+		cog.z := 50;
+		
+		cogx := NumToString(cog.x);
+		cogy := NumToString(cog.y);
+		cogz := NumToString(cog.z);
+		cog_string := "[" + cogx + ", " + cogy + ", " + cogz + "], ";
+		
+		aom.q1 := 1;
+		aom.q2 := 0;
+		aom.q3 := 0;
+		aom.q4 := 0;
+		
+		aomq1 := NumToStr(aom.q1);
+		aomq2 := NumToStr(aom.q2);
+		aomq3 := NumToStr(aom.q3);
+		aomq4 := NumToStr(aom.q4);
+		aom_string := "[" + aomq1 + ", " + aomq2 + ", " + aomq3 + ", " + aomq4 + "], ";
+		
+		ix := "0";
+		iy := "0";
+		iz := "0";
+		inertia_string := "ix + ", " + iy + ", " + iz";
+		
+		!does the sting need ; at the end?
+		final_string := "GripLoad [" + mass + "," + cog_string + aom_string + inertia_String + ";";
+		
+		RETURN final_string;
+	ENDFUNC	
+	
 ENDMODULE
