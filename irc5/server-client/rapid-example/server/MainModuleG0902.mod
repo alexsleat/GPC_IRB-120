@@ -9,7 +9,6 @@ MODULE MainModule
 	VAR bool stest := FALSE;
 	
 
-
 	
 	! Danger ZOne!
 
@@ -32,13 +31,6 @@ MODULE MainModule
 	VAR string trany;
 	VAR string tranz;
 	
-	!motorangles
-	var string motorA1;
-	var string motorA2;
-	var string motorA3;
-	var string motorA4;
-	var string motorA5;
-	var string motorA6;
 	
 	!endpoint rotation
 	VAR string q1;
@@ -84,7 +76,7 @@ MODULE MainModule
 				send_string := trans();
 				SocketSend client_socket \Str:= send_string;
 		! MoveJ func		
-			ELSEIF s_func{1} = "MJ_fc" THEN
+			ELSEIF s_func{1} = "MoveJ_fc" THEN
 			
 				send_string := MoveJ_fc();
 				SocketSend client_socket \Str:= send_string;
@@ -94,7 +86,7 @@ MODULE MainModule
 				ENDFOR
 					
 				FOR this FROM 1 TO 4 DO
-					SocketSend client_socket \Str:= ValToStr(subParserArray{this})  + " ";
+					SocketSend client_socket \Str:= ValToStr(subParserArray{8})  + " ";
 				ENDFOR	
 					
 				SocketSend client_socket \Str:= "END";
@@ -107,7 +99,11 @@ MODULE MainModule
 				TPWrite "Coordinates: x = " + tranx + ", y = " + trany + ", z = " + tranz + ". ";
 				!qunationlkasfja;lskdghslfjhs
 				TPWrite "q1 = : " + q1 + ", " + "q2 = : " + q2 + ", " + "q3 = : " + q3 + ", " + "q4 = : " + q4;
-
+		! CPos func
+			ELSEIF s_func{1} = "CPos_fc" THEN
+	
+				send_string := CPos_fc();
+				SocketSend client_socket \Str:= send_string;
 		! CJointT func
 			ELSEIF s_func{1} = "CJointT_fc" THEN
 					
@@ -119,18 +115,17 @@ MODULE MainModule
 		! ReadMotor func
 			ELSEIF s_func{1} = "ReadMotor_fc" THEN
 	
-				ok := ReadMotor_fc();
-				TPWrite "Motor Angles 1-6: " + motorA1 + " " + motorA2 + " " + motorA3 + " " + motorA4 + " " + motorA5 + " " + motorA6;
-		! VelSet func				
-			ELSEIF s_func{1} = "VelSet_fc" THEN
-	
-				send_string := VelSet_fc();
+				send_string := ReadMotor_fc();
 				SocketSend client_socket \Str:= send_string;
-				TPWrite "Max. TCP speed in mm/s for the robot is: "\Num:=MaxRobSpeed();
-		! AccSet func				
-			ELSEIF s_func{1} = "AccSet_fc" THEN
+		! VelSet func				
+			ELSEIF s_func{1} = "VelSet" THEN
 	
-				send_string := AccSet_fc();
+				send_string := VelSet();
+				SocketSend client_socket \Str:= send_string;
+		! AccSet func				
+			ELSEIF s_func{1} = "AccSet" THEN
+	
+				send_string := AccSet();
 				SocketSend client_socket \Str:= send_string;
 		! GripLoad func				
 			ELSEIF s_func{1} = "GripLoad" THEN
@@ -318,8 +313,7 @@ MODULE MainModule
 ! **********************************************************************************************************************************
 ! MoveJ function:
 !
-!	!Moves the robot by joint movement
-	!want it to take in x,y,z
+!	
 	FUNC string MoveJ_fc()
 	
 		VAR string temp_string;	
@@ -390,7 +384,7 @@ MODULE MainModule
 	! Do the function call with all this lovely new data
 	!
 		
-		MoveJ ToPoint:=pose, Speed:=v1000, Zone:=z30, Tool:=tool0;
+		!MoveJ(mj_toPoint, mj_speed, mj_zone, \Tool:=tool0);
 		
 		temp_string := "MoveJ func: ";
 		
@@ -420,7 +414,33 @@ MODULE MainModule
 		
 	ENDFUNC
 	
+!
+!CPos Function
+!
 
+	FUNC string CPos_fc()
+	
+		VAR robtarget p1;
+		VAR pos pp1;
+		VAR string x;
+		VAR string y;
+		VAR string z;
+	
+		VAR string CPos_string;
+	
+		pp1 := CPos(\Tool:=tool0 \WObj:=wobj0 );
+		
+		x:= NumToStr(pp1.x, 4);
+		y:= NumToStr(pp1.y, 4);
+		z:= NumToStr(pp1.z, 4);
+		
+		!SocketSend client_socket \Str:= 
+		CPos_string := "Cpos," + x + "," + y + "," + z + " " ;
+	
+	RETURN CPos_string;
+		
+	ENDFUNC
+	
 	!read the current angles of the robot axes and external axes. 
 	FUNC num CJointT_fc()
 	
@@ -454,43 +474,44 @@ MODULE MainModule
 		
 	ENDFUNC
 	
-	FUNC num ReadMotor_fc()
-
+	FUNC string ReadMotor_fc()
 		
-		motorA1 := NumToStr(ReadMotor(1),4);
-		motorA2 := NumToStr(ReadMotor(2),4);
-		motorA3 := NumToStr(ReadMotor(3),4);
-		motorA4 := NumToStr(ReadMotor(4),4);
-		motorA5 := NumToStr(ReadMotor(5),4);
-		motorA6 := NumToStr(ReadMotor(6),4);
+		VAR string motor_angle1;
+		VAR string motor_angle2;
+		VAR string motor_angle3;
+		VAR string motor_angle4;
+		VAR string motor_angle5;
+		VAR string motor_angle6;
 		
-		RETURN 1;
+		VAR string ReadMotor_string;
+		
+		motor_angle1 := NumToStr(ReadMotor(1),4);
+		motor_angle2 := NumToStr(ReadMotor(2),4);
+		motor_angle3 := NumToStr(ReadMotor(3),4);
+		motor_angle4 := NumToStr(ReadMotor(4),4);
+		motor_angle5 := NumToStr(ReadMotor(5),4);
+		motor_angle6 := NumToStr(ReadMotor(6),4);
+		
+		ReadMotor_string := "ReadMotor, " + motor_angle1 + "," + motor_angle2 + "," + motor_angle3 + "," + motor_angle4 + "," + motor_angle5 + motor_angle6 + " ";
+		
+	RETURN ReadMotor_string;
 	ENDFUNC
 	
 	!Changes programmed velocity
 	!Arg: VelSet Override(num) Max(num)
 	!eg. VelSet 50, 800;
-	FUNC string VelSet_fc() 
+	FUNC string VelSet() 
 	
 		VAR string override;
 		VAR string max;
-		VAR bool done;
-		
-		VAR num overrideN;
-		VAR num maxN;
 		
 		VAR string final_string;
 		
-		override := s_func{2};
-		max := s_func{3};
-		
-		done:=StrToVal(override, overrideN);
-		done:=StrToVal(max, maxN);
+		override := s_func{1};
+		max := s_func{2};
 		
 		!does the sting need ; at the end?
 		final_string := "VelSet " + override + "," + max + ";";
-		
-		VelSet Override:=overrideN, Max:=maxN;
 		
 		RETURN final_string;
 		
@@ -499,26 +520,17 @@ MODULE MainModule
 	!Reduces the acceleration
 	!Arg: AccSet Acc(num) Ramp(num)
 	!eg. AccSet 50, 100;
-	FUNC string AccSet_fc() 
+	FUNC string AccSet() 
 	
 		VAR string acc;
 		VAR string ramp;
 		VAR string final_string;
-		VAR bool done;
 		
-		VAR num accN;
-		VAR num rampN;
-		
-		acc := s_func{2};
-		ramp := s_func{3};
-		
-		done:=StrToVal(acc, accN);
-		done:=StrToVal(ramp, rampN);
+		acc := s_func{1};
+		ramp := s_func{2};
 		
 		!does the sting need ; at the end?
 		final_string := "AccSet " + acc + "," + ramp + ";";
-		
-		AccSet Acc:=accN, Ramp:=rampN;
 		
 		RETURN final_string;
 		

@@ -20,9 +20,9 @@ string1 = string2 = string3 = ''
 
 for i in data:
 	
-	if count <= 70: 
+	if count <= 60: 
 		string1 = string1 + i
-	elif count <= 140:
+	elif count <= 120:
 		string2 = string2 + i
 	else:
 		string3 = string3 + i
