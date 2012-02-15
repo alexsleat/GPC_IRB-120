@@ -1,4 +1,9 @@
 MODULE MainModule
+
+! *********************************************************
+! Global variables:
+!	
+	
 	VAR socketdev temp_socket;
 	VAR socketdev client_socket;
 	VAR string received_string;
@@ -7,9 +12,6 @@ MODULE MainModule
 	VAR bool keep_listening := TRUE;
 	VAR bool main_loop := TRUE;
 	VAR bool stest := FALSE;
-	
-
-
 	
 	! Danger ZOne!
 
@@ -46,9 +48,18 @@ MODULE MainModule
 	VAR string q3;
 	VAR string q4;
 	
+	VAR num glob_XYZ{3};
+	VAR num glob_ROT1{4};
+	VAR num glob_ROT2{4};
+	VAR num glob_ROT3{6};
+	
 	!this is used for some return functins (didnt know how to return void)
 	VAR num ok := 0;
 
+! *********************************************************
+! Main process.	
+!
+!
 	PROC main()
 	
 		! Create socket for the server:
@@ -59,32 +70,35 @@ MODULE MainModule
 		!Wait for a connection request
 		SocketAccept temp_socket, client_socket;
 
+		! main loop, while a client is connected. set main_loop to FALSE to close.
 		WHILE main_loop DO
 
-			!Comm
-			FOR rcv FROM 1 TO 3 DO
-				SocketReceive client_socket \Str:=temp_string;
-				TPWrite "Client wrote - " + temp_string;
-				SocketSend client_socket \Str:="ACK: " + temp_string;
-				
-				received_string := received_string + temp_string;
-				
-			ENDFOR
+			!Comms
 			
-			SocketSend client_socket \Str:=received_string;
+			SocketReceive client_socket \Str:=received_string;		! receive a string
+			TPWrite "Client wrote - " + temp_string;			! write it to the pendent
+			SocketSend client_socket \Str:="ACK: " + received_string;	! return (with "ACK: " attatched to the start).
 			
-			done_flag := parser();
-			SocketSend client_socket \Str:=" ";
+			done_flag := parser();				! parse the string into an array of strings (global s_func{}) (seperated with '#')
+			SocketSend client_socket \Str:=" ";		! send a blank msg.
 
-	!Function select IF ELSEIF mess:
+			TPWrite "Client wrote - " + s_func{1};
+
+! *********************************************************
+! Function selection IF ELSEIF mess:
+!
+! s_func{1} is the first string in the array which should contain the function call name as below, 
+!	the remaining array elements contain arguments for each function.
 	
-		! Trans func
+	! *********************************************************
+	! Trans func
 			IF s_func{1} = "trans" THEN
 				
 				send_string := trans();
 				SocketSend client_socket \Str:= send_string;
-		! MoveJ func		
-			ELSEIF s_func{1} = "MJ_fc" THEN
+	! *********************************************************
+	! MoveJ func		
+			ELSEIF s_func{1} = "MoveJ_fc" THEN
 			
 				send_string := MoveJ_fc();
 				SocketSend client_socket \Str:= send_string;
@@ -98,7 +112,8 @@ MODULE MainModule
 				ENDFOR	
 					
 				SocketSend client_socket \Str:= "END";
-		! CRobT func
+	! *********************************************************
+	! CRobT func
 			ELSEIF s_func{1} = "CRobT_fc" THEN
 	
 				ok := CRobT_fc();
@@ -108,7 +123,8 @@ MODULE MainModule
 				!qunationlkasfja;lskdghslfjhs
 				TPWrite "q1 = : " + q1 + ", " + "q2 = : " + q2 + ", " + "q3 = : " + q3 + ", " + "q4 = : " + q4;
 
-		! CJointT func
+	! *********************************************************
+	! CJointT func
 			ELSEIF s_func{1} = "CJointT_fc" THEN
 					
 				!new method
@@ -116,28 +132,59 @@ MODULE MainModule
 				!print to the pendant
 				TPWrite "Axis vals: " + rj1 + " " + rj2 + " " + rj3 + " " + rj4 + " " + rj5 + " " + rj6;
 				
-		! ReadMotor func
+	! *********************************************************
+	! ReadMotor func
 			ELSEIF s_func{1} = "ReadMotor_fc" THEN
 	
 				ok := ReadMotor_fc();
 				TPWrite "Motor Angles 1-6: " + motorA1 + " " + motorA2 + " " + motorA3 + " " + motorA4 + " " + motorA5 + " " + motorA6;
-		! VelSet func				
+	! *********************************************************
+	! VelSet func				
 			ELSEIF s_func{1} = "VelSet_fc" THEN
 	
 				send_string := VelSet_fc();
 				SocketSend client_socket \Str:= send_string;
 				TPWrite "Max. TCP speed in mm/s for the robot is: "\Num:=MaxRobSpeed();
-		! AccSet func				
+	! *********************************************************
+	! AccSet func				
 			ELSEIF s_func{1} = "AccSet_fc" THEN
 	
 				send_string := AccSet_fc();
 				SocketSend client_socket \Str:= send_string;
-		! GripLoad func				
-			ELSEIF s_func{1} = "GripLoad" THEN
+	! *********************************************************
+	! GripLoad func	
+				
+			ELSEIF s_func{1} = "GripLoad_fc" THEN
 	
-				send_string := GripLoad();
-				SocketSend client_socket \Str:= send_string;			
-		! Close Socket func
+				send_string := GripLoad_fc();
+				SocketSend client_socket \Str:= send_string;	
+				
+	! *********************************************************
+	! Function calls for setting XYZ and Rotation matrix:
+	!
+			ELSEIF s_func{1} = "setXYZ" THEN
+				done_flag := subParser(s_func{2}, "XYZ");
+
+				TPWrite "Client wrote - " + NumToStr(glob_XYZ{1}, 4) + " " + NumToStr(glob_XYZ{2}, 4) + " " + NumToStr(glob_XYZ{3}, 4);
+				
+			ELSEIF s_func{1} = "setROT1" THEN
+				done_flag := subParser(s_func{2}, "ROT1");
+				
+				TPWrite "Client wrote - " + NumToStr(glob_ROT1{1}, 4) + " " + NumToStr(glob_ROT1{2}, 4) + " " + NumToStr(glob_ROT1{3}, 4) + " " + NumToStr(glob_ROT1{4}, 4);
+				
+			ELSEIF s_func{1} = "setROT2" THEN
+				done_flag := subParser(s_func{2}, "ROT2");
+				
+				TPWrite "Client wrote - " + NumToStr(glob_ROT2{1}, 4) + " " + NumToStr(glob_ROT2{2}, 4) + " " + NumToStr(glob_ROT2{3}, 4) + " " + NumToStr(glob_ROT2{4}, 4);
+				
+			ELSEIF s_func{1} = "setROT3" THEN
+				done_flag := subParser(s_func{2}, "ROT3");
+				
+				TPWrite "Client wrote - " + NumToStr(glob_ROT3{1}, 4) + " " + NumToStr(glob_ROT3{2}, 4) + " " + NumToStr(glob_ROT3{3}, 4) + " " + NumToStr(glob_ROT3{4}, 4) + " " + NumToStr(glob_ROT3{5}, 4) + " " + NumToStr(glob_ROT3{6}, 4);
+						
+	! *********************************************************
+	! close down the server when closeSocket is received.
+	!
 			ELSEIF s_func{1} = "closeSocket" THEN
 				main_loop := FALSE;
 		! Else Error.			
@@ -161,9 +208,9 @@ MODULE MainModule
 		
 	ENDPROC
 ! **********************************************************************************************************************************
-! $ parser for dolla signs
+! # parser for dolla signs
 !
-!	We use $ to seperate command lists in the TCP/IP string sent from the client, this splits them up.
+!	We use # to seperate command lists in the TCP/IP string sent from the client, this splits them up.
 !	
 	FUNC num parser()
 	
@@ -206,7 +253,7 @@ MODULE MainModule
 !
 !	Will usually be for strings which contain a bunch of values seperated by commas
 !
-	FUNC num subParser(string inString)
+	FUNC num subParser(string inString, string type)
 	
 		!VAR string s_func{8};
 		VAR num inString_len;
@@ -215,6 +262,12 @@ MODULE MainModule
 		VAR num string_pos := 1;	! Where in the string of the current var it is
 		
 		VAR string temp;
+		
+		VAR string temp_XYZ{3};
+		VAR string temp_ROT1{4};
+		VAR string temp_ROT2{4};
+		VAR string temp_ROT3{6};
+		VAR bool goodstuff;
 		
 		!loop string by each char
 		inString_len := StrLen(inString);
@@ -229,14 +282,53 @@ MODULE MainModule
 			IF temp = "," THEN	
 				var_pos := var_pos + 1;			
 			ELSE
-				subParserArray{var_pos} := subParserArray{var_pos} + temp;		!build up a new array of seperated commands
-				
+			
+				IF type = "XYZ" THEN
+					temp_XYZ{var_pos} := temp_XYZ{var_pos} + temp;	!build up a new array
+				ELSEIF type = "ROT1" THEN
+					temp_ROT1{var_pos} := temp_ROT1{var_pos} + temp;	!build up a new array
+				ELSEIF type = "ROT2" THEN
+					temp_ROT2{var_pos} := temp_ROT2{var_pos} + temp;	!build up a new array
+				ELSEIF type = "ROT3" THEN
+					temp_ROT3{var_pos} := temp_ROT3{var_pos} + temp;	!build up a new array
+				ELSE
+					TPWrite "subParser failed at ";
+					
+				ENDIF
 			ENDIF
 			
 			string_pos := string_pos + 1;
 
 		ENDFOR
 		
+		! Pass temps to globals
+		
+		IF type = "XYZ" THEN
+			goodstuff := StrToVal(temp_XYZ{1}, glob_XYZ{1});
+			goodstuff := StrToVal(temp_XYZ{2}, glob_XYZ{2});
+			goodstuff := StrToVal(temp_XYZ{3}, glob_XYZ{3});
+		ELSEIF type = "ROT1" THEN
+			goodstuff := StrToVal(temp_ROT1{1}, glob_ROT1{1});
+			goodstuff := StrToVal(temp_ROT1{2}, glob_ROT1{2});
+			goodstuff := StrToVal(temp_ROT1{3}, glob_ROT1{3});
+			goodstuff := StrToVal(temp_ROT1{4}, glob_ROT1{4});
+		ELSEIF type = "ROT2" THEN
+			goodstuff := StrToVal(temp_ROT2{1}, glob_ROT2{1});
+			goodstuff := StrToVal(temp_ROT2{2}, glob_ROT2{2});
+			goodstuff := StrToVal(temp_ROT2{3}, glob_ROT2{3});
+			goodstuff := StrToVal(temp_ROT2{4}, glob_ROT2{4});
+		ELSEIF type = "ROT3" THEN
+			goodstuff := StrToVal(temp_ROT3{1}, glob_ROT3{1});
+			goodstuff := StrToVal(temp_ROT3{2}, glob_ROT3{2});
+			goodstuff := StrToVal(temp_ROT3{3}, glob_ROT3{3});
+			goodstuff := StrToVal(temp_ROT3{4}, glob_ROT3{4});
+			goodstuff := StrToVal(temp_ROT3{5}, glob_ROT3{5});
+			goodstuff := StrToVal(temp_ROT3{6}, glob_ROT3{6});
+		ELSE
+			TPWrite "subParser Failed at passing temp to globals.";
+			
+		ENDIF
+							
 		!RETURN subParserArray{1};		! Return the split string (as an array)
 		RETURN 1;
 		
@@ -318,8 +410,9 @@ MODULE MainModule
 ! **********************************************************************************************************************************
 ! MoveJ function:
 !
-!	!Moves the robot by joint movement
-	!want it to take in x,y,z
+!Moves the robot by joint movement
+!want it to take in x,y,z
+
 	FUNC string MoveJ_fc()
 	
 		VAR string temp_string;	
@@ -355,26 +448,14 @@ MODULE MainModule
 				temp_string := "MoveJ_fc failed at itteration : " + ValToStr(this) + " of StrToVal";
 				RETURN temp_string;
 		ENDFOR
-		
+
 		! blast in those lovely new nums in to robtarget ;)
-		pose	:= [ 	[temp_rob{1}, temp_rob{2}, temp_rob{3}] ,						
-				[temp_rob{4}, temp_rob{5}, temp_rob{6}, temp_rob{7}] ,					
-				[temp_rob{8}, temp_rob{9}, temp_rob{10}, temp_rob{11}] 	,				
-				[temp_rob{12}, temp_rob{13}, temp_rob{14}, temp_rob{15}, temp_rob{16}, temp_rob{17}] ];	
+		pose	:= [ 	[glob_XYZ{1}, glob_XYZ{2}, glob_XYZ{3}] ,						
+				[glob_ROT1{1}, glob_ROT1{2}, glob_ROT1{3}, glob_ROT1{4}] ,					
+				[glob_ROT2{1}, glob_ROT2{2}, glob_ROT2{3}, glob_ROT2{4}] ,				
+				[glob_ROT3{1}, glob_ROT3{2}, glob_ROT3{3}, glob_ROT3{4}, glob_ROT3{5}, glob_ROT3{6}] ];	
 		
-	!
-	! Convert string to speeddata, does what it says on the tin.
-	!
-		
-		rP_flag := subParser(s_func{3});
-		
-		done := StrToVal(subParserArray{1}, temp_speed1);
-		done := StrToVal(subParserArray{2}, temp_speed2);
-		done := StrToVal(subParserArray{3}, temp_speed3);
-		done := StrToVal(subParserArray{4}, temp_speed4);
-		
-		mj_speed := [temp_speed1, temp_speed2, temp_speed3, temp_speed4];
-		
+	
 	!
 	! Convert string to zonedata, ?
 	!
@@ -390,16 +471,18 @@ MODULE MainModule
 	! Do the function call with all this lovely new data
 	!
 		
-		MoveJ ToPoint:=pose, Speed:=v1000, Zone:=z30, Tool:=tool0;
+		MoveJ ToPoint:=pose, Speed:=v500, Zone:=z50, Tool:=tool0;
 		
 		temp_string := "MoveJ func: ";
 		
 		RETURN temp_string;
 		
 	ENDFUNC
+
+! **********************************************************************************************************************************
+! CRobT Function
 !
-!CRobT Function
-!
+
 	FUNC num CRobT_fc()
 	
 		VAR robtarget p1;
@@ -420,8 +503,10 @@ MODULE MainModule
 		
 	ENDFUNC
 	
-
-	!read the current angles of the robot axes and external axes. 
+! **********************************************************************************************************************************
+! CJointT function:
+! read the current angles of the robot axes and external axes. 
+!
 	FUNC num CJointT_fc()
 	
 		VAR robtarget p1;
@@ -453,7 +538,9 @@ MODULE MainModule
 		RETURN 1;
 		
 	ENDFUNC
-	
+! **********************************************************************************************************************************
+! ReadMotor function:
+!	
 	FUNC num ReadMotor_fc()
 
 		
@@ -466,10 +553,13 @@ MODULE MainModule
 		
 		RETURN 1;
 	ENDFUNC
-	
-	!Changes programmed velocity
-	!Arg: VelSet Override(num) Max(num)
-	!eg. VelSet 50, 800;
+! **********************************************************************************************************************************
+! VelSet function:	
+!
+! Changes programmed velocity
+! Arg: VelSet Override(num) Max(num)
+! eg. VelSet 50, 800;
+
 	FUNC string VelSet_fc() 
 	
 		VAR string override;
@@ -495,10 +585,13 @@ MODULE MainModule
 		RETURN final_string;
 		
 	ENDFUNC
-	
-	!Reduces the acceleration
-	!Arg: AccSet Acc(num) Ramp(num)
-	!eg. AccSet 50, 100;
+! **********************************************************************************************************************************
+! AccSet function:	
+!
+!Reduces the acceleration
+!Arg: AccSet Acc(num) Ramp(num)
+!eg. AccSet 50, 100;
+
 	FUNC string AccSet_fc() 
 	
 		VAR string acc;
@@ -523,11 +616,14 @@ MODULE MainModule
 		RETURN final_string;
 		
 	ENDFUNC
-	
-	!Defines the payload for the robot
-	!Arg: GripLoad Load(loaddata)
-	!eg. GripLoad peice1;
-	FUNC string GripLoad() 
+! **********************************************************************************************************************************
+! GripLoad function:
+!	
+!Defines the payload for the robot
+!Arg: GripLoad Load(loaddata)
+!eg. GripLoad peice1;
+
+	FUNC string GripLoad_fc() 
 	
 		!VAR loaddata load;
 		
