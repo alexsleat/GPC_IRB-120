@@ -74,9 +74,9 @@ MODULE MainModule
 		WHILE main_loop DO
 
 			!Comms
-			
+			received_string := "";
 			SocketReceive client_socket \Str:=received_string;		! receive a string
-			TPWrite "Client wrote - " + temp_string;			! write it to the pendent
+			TPWrite "Client wrote - " + received_string;			! write it to the pendent
 			SocketSend client_socket \Str:="ACK: " + received_string;	! return (with "ACK: " attatched to the start).
 			
 			done_flag := parser();				! parse the string into an array of strings (global s_func{}) (seperated with '#')
@@ -102,16 +102,7 @@ MODULE MainModule
 			
 				send_string := MoveJ_fc();
 				SocketSend client_socket \Str:= send_string;
-				
-				FOR this FROM 1 TO 17 DO
-					SocketSend client_socket \Str:= ValToStr(robt_parserArr{this})  + " ";
-				ENDFOR
-					
-				FOR this FROM 1 TO 4 DO
-					SocketSend client_socket \Str:= ValToStr(subParserArray{this})  + " ";
-				ENDFOR	
-					
-				SocketSend client_socket \Str:= "END";
+
 	! *********************************************************
 	! CRobT func
 			ELSEIF s_func{1} = "CRobT_fc" THEN
@@ -180,7 +171,7 @@ MODULE MainModule
 			ELSEIF s_func{1} = "setROT3" THEN
 				done_flag := subParser(s_func{2}, "ROT3");
 				
-				TPWrite "Client wrote - " + NumToStr(glob_ROT3{1}, 4) + " " + NumToStr(glob_ROT3{2}, 4) + " " + NumToStr(glob_ROT3{3}, 4) + " " + NumToStr(glob_ROT3{4}, 4) + " " + NumToStr(glob_ROT3{5}, 4) + " " + NumToStr(glob_ROT3{6}, 4);
+				!TPWrite "Client wrote - " + NumToStr(glob_ROT3{1}, 4) + " " + NumToStr(glob_ROT3{2}, 4) + " " + NumToStr(glob_ROT3{3}, 4) + " " + NumToStr(glob_ROT3{4}, 4) + " " + NumToStr(glob_ROT3{5}, 4) + " " + NumToStr(glob_ROT3{6}, 4);
 						
 	! *********************************************************
 	! close down the server when closeSocket is received.
@@ -224,6 +215,15 @@ MODULE MainModule
 		
 		!loop string by each char
 		received_string_len := StrLen(received_string);
+		
+		s_func{1} := "";
+		s_func{2} := "";
+		s_func{3} := "";
+		s_func{4} := "";
+		s_func{5} := "";
+		s_func{6} := "";
+		s_func{7} := "";
+		s_func{8} := "";
 		
 		FOR looper FROM 1 TO received_string_len DO			! Loop each character in the string
 		
@@ -430,7 +430,7 @@ MODULE MainModule
 		VAR num temp_speed3;
 		VAR num temp_speed4;
 		
-		rP_flag := robtParser(s_func{2});
+		!rP_flag := robtParser(s_func{2});
 		
 	!
 	! Convert string to robtarget, for the position data
@@ -439,15 +439,15 @@ MODULE MainModule
 		
 		
 		! Convert from string to num.
-		FOR this FROM 1 TO 17 DO
+		!FOR this FROM 1 TO 17 DO
 		
-			done := StrToVal(robt_parserArr{this}, temp_rob{this});
+			!done := StrToVal(robt_parserArr{this}, temp_rob{this});
 			
 			! something failed, should exit with an error.
-			IF done = FALSE
-				temp_string := "MoveJ_fc failed at itteration : " + ValToStr(this) + " of StrToVal";
-				RETURN temp_string;
-		ENDFOR
+			!IF done = FALSE
+				!temp_string := "MoveJ_fc failed at itteration : " + ValToStr(this) + " of StrToVal";
+				!RETURN temp_string;
+		!ENDFOR
 
 		! blast in those lovely new nums in to robtarget ;)
 		pose	:= [ 	[glob_XYZ{1}, glob_XYZ{2}, glob_XYZ{3}] ,						
@@ -473,7 +473,7 @@ MODULE MainModule
 		
 		MoveJ ToPoint:=pose, Speed:=v500, Zone:=z50, Tool:=tool0;
 		
-		temp_string := "MoveJ func: ";
+		temp_string := "MoveJ-ing";
 		
 		RETURN temp_string;
 		
