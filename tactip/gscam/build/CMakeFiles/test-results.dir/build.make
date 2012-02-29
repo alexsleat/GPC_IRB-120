@@ -32,10 +32,10 @@ CMAKE_COMMAND = /usr/bin/cmake
 RM = /usr/bin/cmake -E remove -f
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/gareth/TacCam/gscam
+CMAKE_SOURCE_DIR = /home/gareth/GPC_IRB-120/tactip/gscam
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/gareth/TacCam/gscam/build
+CMAKE_BINARY_DIR = /home/gareth/GPC_IRB-120/tactip/gscam/build
 
 # Utility rule file for test-results.
 
@@ -55,6 +55,6 @@ CMakeFiles/test-results.dir/clean:
 .PHONY : CMakeFiles/test-results.dir/clean
 
 CMakeFiles/test-results.dir/depend:
-	cd /home/gareth/TacCam/gscam/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gareth/TacCam/gscam /home/gareth/TacCam/gscam /home/gareth/TacCam/gscam/build /home/gareth/TacCam/gscam/build /home/gareth/TacCam/gscam/build/CMakeFiles/test-results.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/gareth/GPC_IRB-120/tactip/gscam/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gareth/GPC_IRB-120/tactip/gscam /home/gareth/GPC_IRB-120/tactip/gscam /home/gareth/GPC_IRB-120/tactip/gscam/build /home/gareth/GPC_IRB-120/tactip/gscam/build /home/gareth/GPC_IRB-120/tactip/gscam/build/CMakeFiles/test-results.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/test-results.dir/depend
 

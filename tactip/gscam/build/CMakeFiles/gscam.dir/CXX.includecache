@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/gareth/TacCam/gscam/src/gscam.cpp
+/home/gareth/GPC_IRB-120/tactip/gscam/src/gscam.cpp
 stdlib.h
 -
 unistd.h
