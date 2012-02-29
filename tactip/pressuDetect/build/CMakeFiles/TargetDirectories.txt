@@ -1,0 +1,16 @@
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/ROSBUILD_genmsg_cpp.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/ROSBUILD_genmsg_lisp.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/ROSBUILD_gensrv_cpp.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/ROSBUILD_gensrv_lisp.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/clean-test-results.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/pressuDetect.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/rosbuild_precompile.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/rosbuild_premsgsrvgen.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/rospack_genmsg.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/rospack_genmsg_libexe.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/rospack_gensrv.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/test.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/test-future.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/test-results.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/test-results-run.dir
+/home/gareth/TacCam/pressuDetect/build/CMakeFiles/tests.dir
