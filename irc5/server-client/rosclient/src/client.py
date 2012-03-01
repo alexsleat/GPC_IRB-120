@@ -7,137 +7,166 @@ import socket
 import sys
 import time
 
-# subscribe
+# std_msgs
 from std_msgs.msg import String
+from std_msgs.msg import Float32
+from std_msgs.msg import Float32MultiArray
+from std_msgs.msg import Int32
+
 def callback(data):
 	#rospy.loginfo("server_spammer: %s",data.data)
-	#if send_flag is set, send the data
-	sendData(data.data)
+	#if sendflag is set, send the data
+	sendflag = 1
+	sendData("hi", sendflag)
+	recvData()
+# ##################################################
+#
+# If a new XYZ is published, this callback will happen and send the pose to the server
+#
+def setXYZ(data):
+	#subscribe to XYZ
+	print "\n\n\n\n raw:"
+	print data.data
+	print "\n"
+	#convert XYZ double array to string
+	tempStr = ''
+	tempStr = repr(data.data).replace('array','')
+	
+	print "\n str:"
+	print tempStr
+	print "\n"
+	
+	tempStr = tempStr.replace(' ','')
+	tempStr = tempStr.replace('(', '')
+	tempStr = tempStr.replace(')','')
+	tempStr = "setXYZ#" + tempStr + "#0"
+
+	print type(tempStr)
+	print "\n to send:"
+	print tempStr
+	print "\n\n\n\n"	
+	
+	#send string with setXYZ to server.
+	sock.send(tempStr)
+	#Clear string
+	tempStr = ''
+# ##################################################
+#
+# If a new rotation matrix is published, this callback will send the data to the server
+#	
+def setROT(data):
+	#subscribe to ROT
+	tempStr = data.data
+	#convert ROT double array to 3 strings:
+	#Remove the gumf from python strings
+	tempStr1 = repr(tempStr[0:4]).replace('array','')
+	tempStr1 = tempStr1.replace(' ','')
+	tempStr1 = tempStr1.replace('(', '')
+	tempStr1 = tempStr1.replace(')','')
+
+	tempStr2 = repr(tempStr[4:8]).replace('array','')
+	tempStr2 = tempStr2.replace(' ','')
+	tempStr2 = tempStr2.replace('(', '')
+	tempStr2 = tempStr2.replace(')','')
+	
+	tempStr3 = repr(tempStr[8:14]).replace('array','')
+	tempStr3 = tempStr3.replace(' ','')
+	tempStr3 = tempStr3.replace('(', '')
+	tempStr3 = tempStr3.replace(')','')	
+	
+	tempStr1 = "setROT1#" + tempStr1 + "#0"	
+	tempStr2 = "setROT2#" + tempStr2 + "#0"
+	tempStr3 = "setROT3#" + tempStr3 + "#0"
+	
+	#send each string of ROT to server:
+	sock.send(tempStr1)
+	sock.send(tempStr2)
+	sock.send(tempStr3)
+	#Clear strings
+	tempStr = ''
+	tempStr1 = ''
+	tempStr2 = ''
+	tempStr3 = ''
+# ##################################################
+#
+# If armMoveFlag is set, a move command will be sent to the server.
+#
+def moveArm(data):
+	#subscribe to armMoveFlag, if 1 send the move command:
+	if(data.data == 1):
+		sock.send("MoveJ_fc#0")
+		#publish armMoveFlag to 0 (to say it's moved.)
+		
+def pubCurrentPose(currentX, currentY, currentZ):
+	pubX = rospy.Publisher('currentX', Float32)
+	pubY = rospy.Publisher('currentY', Float32)
+	pubZ = rospy.Publisher('currentZ', Float32)
+
+	while not rospy.is_shutdown():
+	
+		info = "Current XYZ: " + str(currentX) + ", " + str(currentY) + ", " + str(currentZ)
+		
+		rospy.loginfo(info)
+		
+		pubX.publish(Float32(currentX))
+		pubY.publish(Float32(currentY))
+		pubZ.publish(Float32(currentZ))
+		
+		rospy.sleep(1.0)
 
 def listener():
+	
 	rospy.init_node('listener', anonymous=True)
+	
+	#check subscriptions
 	rospy.Subscriber("server_spammer", String, callback)
+	rospy.Subscriber("armXYZArr", 	Float32MultiArray, setXYZ)
+	rospy.Subscriber("armRotArr",	Float32MultiArray, setROT)
+	rospy.Subscriber("armMoveFlag", Int32, moveArm)
+	
+	#
+
+	#check for data
+	sock.send("CRobT_fc#0")
+	recvData()
+	
 	rospy.spin()
 
-# ##################################################
-#
-# Publishers for returned data from the IRC5 server:
-#
-def CRobTPublisher(x,y,z):
-	xPub = rospy.Publisher('CRobT_x', Float32)
-	yPub = rospy.Publisher('CRobT_y', Float32)
-	zPub = rospy.Publisher('CRobT_z', Float32)
-	rospy.init_node('rosclient')
-
-	xPub.publish(Float32(x))
-	yPub.publish(Float32(y))
-	zPub.publish(Float32(z))
-	
-def ReadMotorPublisher(mot1, mot2, mot3, mot4, mot5, mot6):
-
-	mot1Pub = rospy.Publisher('ReadMotor_mot1', Float32)
-	mot2Pub = rospy.Publisher('ReadMotor_mot2', Float32)
-	mot3Pub = rospy.Publisher('ReadMotor_mot3', Float32)
-	mot4Pub = rospy.Publisher('ReadMotor_mot4', Float32)
-	mot5Pub = rospy.Publisher('ReadMotor_mot5', Float32)
-	mot6Pub = rospy.Publisher('ReadMotor_mot6', Float32)
-	rospy.init_node('rosclient')
-	
-	mot1Pub.publish(Float32(mot1))
-	mot2Pub.publish(Float32(mot2))
-	mot3Pub.publish(Float32(mot3))
-	mot4Pub.publish(Float32(mot4))
-	mot5Pub.publish(Float32(mot5))
-	mot6Pub.publish(Float32(mot6))
-	
 
 # ##################################################
 #
-# Send a data packet (split in to 3 and stiched at the other end):
+# Send a data packet
 #
-def sendData(sendPacket):
+def sendData(sendPacket, sendflag):
 
-
-	count = 0;
-	string1 = string2 = string3 = ''
-
-	for i in data:
-		count = count + 1
-		if count <= 70: 
-			string1 = string1 + i
-		elif count <= 140:
-			string2 = string2 + i
-		else:
-			string3 = string3 + i
-
-	print "String 1: " + string1
-	print "String 2: " + string2
-	print "String 3: " + string3
-
-	send_str = [string1, string2, string3]
-
-	# send data (3 packets 
-	for i in 3:
-
-		if i >= 1 && send_str[i] == '':
-			send_str[i] = '#0'
-		sock.send(send_str[i])
-		received = sock.recv(1024)
-		#print "Iteration ", i, ":"
-		print "\tSent: " , data
-		print "\tRecieved: ", received	
-		if send_str[i] == received:
-			print "\t\tData OK!"
-
-	# clear received buffer:	
-	received = ''
-
-	# recieve returned packet from data, currently set to get 3 packets, which get stiched together
-	#for i in 1:
-	received = received + sock.recv(1024)
-		
-	received.split('#')
+	if sendflag == 1:
+		sock.send(sendPacket)
+		print "\tSent: ", sendPacket
+		sendflag = 0
 	
-	# ##################################################
-	#
-	# Check which function was recieved:
-	#
-	if received[0] == 'MoveJ_fc':
-		# Publish the angles each joint was set to:
-		print "\t Robot Joints set: "
-		
-		# Set move set flag?
+# ##################################################
+#
+# Get a data packet and check what it is..
+#
+def recvData():
 
-	elif received[0] == 'CRobT_fc':
-		# Check if the server returned the correct number of variables:
-		if len(received) == 4:
-			# Publish XYZ coordinates:
-			CRobTPublisher(float(received[1]), float(received[2]), float(received[3]))
-			print "\t CRobT: x=" + received[1] + ", y=" + received[2] + ", z=" + received[3]
+	received = sock.recv(1024)
+	print "\tRecieved: ", received
+	
+	#Check what command was returned:
+	temp = received.split('#')
+	#If the returned data begins with CurrentXYZ publish the current XYZ position:
+	if temp[0] == "CurrentXYZ":
+		pose = temp[1].split(',')
+		pubCurrentPose(float(pose[0]), float(pose[1]), float(pose[2]))
+	elif temp[0] == "CurrentMotor":
+		#publish them
+		print "publish"
+	elif temp[0] == "CurrentJoints":
+		#publish them
+		print "Publish"
+	
 
-	elif received[0] == 'CPos_fc':
-		# 
-		print "\t "
-	elif received[0] == 'CJointT_fc':
-		# 
-		print "\t "
-	elif received[0] == 'ReadMotor_fc':
-		# Check if the server returned the correct number of variables:
-		if len(received) == 7:
-			# Publish the motor readings:
-			ReadMotorPublisher(float(received[1]), float(received[2]), float(received[3]), float(received[4]), float(received[5]), float(received[6]))
-			print "\t ReadMotor: 1=" + received[1] + ", 2=" + received[2] + ", 3=" + received[3] + ", 4=" + received[4] + ", 5=" + received[5] + ", 6=" + received[6]
-	elif received[0] == 'VelSet':
-		# Publish the new velocity setting:
-		print "\t "
-	elif received[0] == 'AccSet':
-		# Publish the new acceleration setting:
-		print "\t "
-	elif received[0] == 'GripLoad':
-		# Publish the grip load reading:
-		print "\t "
-	else:
-		print "ERROR : Returned packet, was wrong, falling out."
 if __name__ == '__main__':
 
 # Set up sockets
@@ -153,10 +182,10 @@ if __name__ == '__main__':
 	listener()
 
 #Close down (ctrl+c should do this!)
-	print "sleepytime"
-	time.sleep(0.1)
-	print "fin"
+	print "Shutting Down.."
+	time.sleep(1)
 	sock.send("closeSocket")
-	time.sleep(0.1)
+	time.sleep(1)
 	sock.close()
+	
 

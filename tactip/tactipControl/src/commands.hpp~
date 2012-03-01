@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "ros/ros.h"
+#include "std_msgs/Int32.h"
+#include "std_msgs/String.h"
+#include "std_msgs/Float32.h"
+#include "std_msgs/Float32MultiArray.h"
+
+//Declerations
+
+int setArmXYZ(ros::Publisher pub, 	double X, double Y, double Z);
+int setArmROT(ros::NodeHandle n, 	double r1, double r2, double r3, double r4, 
+					double r5, double r6, double r7, double r8, 
+					double r9, double r10, double r11, double r12, double r13, double r14);
+int sendArmMove(ros::NodeHandle n);
+
+//Globals

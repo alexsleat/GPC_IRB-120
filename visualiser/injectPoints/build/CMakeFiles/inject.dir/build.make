@@ -86,7 +86,6 @@ CMakeFiles/inject.dir/src/injectPoints.o.provides: CMakeFiles/inject.dir/src/inj
 .PHONY : CMakeFiles/inject.dir/src/injectPoints.o.provides
 
 CMakeFiles/inject.dir/src/injectPoints.o.provides.build: CMakeFiles/inject.dir/src/injectPoints.o
-.PHONY : CMakeFiles/inject.dir/src/injectPoints.o.provides.build
 
 # Object files for target inject
 inject_OBJECTS = \
