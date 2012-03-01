@@ -32,15 +32,15 @@ CMAKE_COMMAND = /usr/bin/cmake
 RM = /usr/bin/cmake -E remove -f
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/gareth/TacCam/pressuDetect
+CMAKE_SOURCE_DIR = /home/alex/GPC_IRB-120/tactip/pressuDetect
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/gareth/TacCam/pressuDetect/build
+CMAKE_BINARY_DIR = /home/alex/GPC_IRB-120/tactip/pressuDetect/build
 
 # Utility rule file for clean-test-results.
 
 CMakeFiles/clean-test-results:
-	if ! rm -rf /home/gareth/.ros/test_results/pressuDetect; then echo WARNING:\ failed\ to\ remove\ test-results\ directory ; fi
+	if ! rm -rf /home/alex/.ros/test_results/pressuDetect; then echo WARNING:\ failed\ to\ remove\ test-results\ directory ; fi
 
 clean-test-results: CMakeFiles/clean-test-results
 clean-test-results: CMakeFiles/clean-test-results.dir/build.make
@@ -55,6 +55,6 @@ CMakeFiles/clean-test-results.dir/clean:
 .PHONY : CMakeFiles/clean-test-results.dir/clean
 
 CMakeFiles/clean-test-results.dir/depend:
-	cd /home/gareth/TacCam/pressuDetect/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gareth/TacCam/pressuDetect /home/gareth/TacCam/pressuDetect /home/gareth/TacCam/pressuDetect/build /home/gareth/TacCam/pressuDetect/build /home/gareth/TacCam/pressuDetect/build/CMakeFiles/clean-test-results.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/alex/GPC_IRB-120/tactip/pressuDetect/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/alex/GPC_IRB-120/tactip/pressuDetect /home/alex/GPC_IRB-120/tactip/pressuDetect /home/alex/GPC_IRB-120/tactip/pressuDetect/build /home/alex/GPC_IRB-120/tactip/pressuDetect/build /home/alex/GPC_IRB-120/tactip/pressuDetect/build/CMakeFiles/clean-test-results.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/clean-test-results.dir/depend
 

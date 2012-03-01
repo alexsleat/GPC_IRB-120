@@ -32,10 +32,10 @@ CMAKE_COMMAND = /usr/bin/cmake
 RM = /usr/bin/cmake -E remove -f
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/gareth/TacCam/pressuDetect
+CMAKE_SOURCE_DIR = /home/alex/GPC_IRB-120/tactip/pressuDetect
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/gareth/TacCam/pressuDetect/build
+CMAKE_BINARY_DIR = /home/alex/GPC_IRB-120/tactip/pressuDetect/build
 
 # Utility rule file for rospack_gensrv.
 
@@ -54,6 +54,6 @@ CMakeFiles/rospack_gensrv.dir/clean:
 .PHONY : CMakeFiles/rospack_gensrv.dir/clean
 
 CMakeFiles/rospack_gensrv.dir/depend:
-	cd /home/gareth/TacCam/pressuDetect/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gareth/TacCam/pressuDetect /home/gareth/TacCam/pressuDetect /home/gareth/TacCam/pressuDetect/build /home/gareth/TacCam/pressuDetect/build /home/gareth/TacCam/pressuDetect/build/CMakeFiles/rospack_gensrv.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/alex/GPC_IRB-120/tactip/pressuDetect/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/alex/GPC_IRB-120/tactip/pressuDetect /home/alex/GPC_IRB-120/tactip/pressuDetect /home/alex/GPC_IRB-120/tactip/pressuDetect/build /home/alex/GPC_IRB-120/tactip/pressuDetect/build /home/alex/GPC_IRB-120/tactip/pressuDetect/build/CMakeFiles/rospack_gensrv.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/rospack_gensrv.dir/depend
 

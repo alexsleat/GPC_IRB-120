@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/gareth/TacCam/pressuDetect/src/pressuDetect.cpp" "/home/gareth/TacCam/pressuDetect/build/CMakeFiles/pressuDetect.dir/src/pressuDetect.o"
+  "/home/alex/GPC_IRB-120/tactip/pressuDetect/src/pressuDetect.cpp" "/home/alex/GPC_IRB-120/tactip/pressuDetect/build/CMakeFiles/pressuDetect.dir/src/pressuDetect.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 
