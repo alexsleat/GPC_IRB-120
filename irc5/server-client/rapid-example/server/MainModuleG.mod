@@ -111,6 +111,9 @@ MODULE MainModule
 				
 				!xyz coordinates
 				TPWrite "Coordinates: x = " + tranx + ", y = " + trany + ", z = " + tranz + ". ";
+				!Also send it back over the socket
+				send_string := "CurrentXYZ#" + tranx + "," + trany + "," + tranx + "#0";
+				SocketSend client_socket \Str:= send_string;
 				!qunationlkasfja;lskdghslfjhs
 				TPWrite "q1 = : " + q1 + ", " + "q2 = : " + q2 + ", " + "q3 = : " + q3 + ", " + "q4 = : " + q4;
 
@@ -122,6 +125,9 @@ MODULE MainModule
 				ok := CJointT_fc();
 				!print to the pendant
 				TPWrite "Axis vals: " + rj1 + " " + rj2 + " " + rj3 + " " + rj4 + " " + rj5 + " " + rj6;
+				!Send back over the socket:
+				send_string := "CurrentJoints#" + rj1 + "," + rj2 + "," + rj3 + "," + rj4 + "," + rj5 + "," + rj6;
+				SocketSend client_socket \Str:= send_string;
 				
 	! *********************************************************
 	! ReadMotor func
@@ -129,6 +135,8 @@ MODULE MainModule
 	
 				ok := ReadMotor_fc();
 				TPWrite "Motor Angles 1-6: " + motorA1 + " " + motorA2 + " " + motorA3 + " " + motorA4 + " " + motorA5 + " " + motorA6;
+				send_string := "CurrentJoints#" + motorA1 + "," + motorA2 + "," + motorA3 + "," + motorA4 + "," + motorA5 + "," + motorA6;
+				SocketSend client_socket \Str:= send_string;
 	! *********************************************************
 	! VelSet func				
 			ELSEIF s_func{1} = "VelSet_fc" THEN

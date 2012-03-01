@@ -96,14 +96,40 @@ def moveArm(data):
 	if(data.data == 1):
 		sock.send("MoveJ_fc#0")
 		#publish armMoveFlag to 0 (to say it's moved.)
+		
+def pubCurrentPose(currentX, currentY, currentZ):
+	pubX = rospy.Publisher('currentX', Float32)
+	pubY = rospy.Publisher('currentY', Float32)
+	pubZ = rospy.Publisher('currentZ', Float32)
+
+	while not rospy.is_shutdown():
+	
+		info = "Current XYZ: " + str(currentX) + ", " + str(currentY) + ", " + str(currentZ)
+		
+		rospy.loginfo(info)
+		
+		pubX.publish(Float32(currentX))
+		pubY.publish(Float32(currentY))
+		pubZ.publish(Float32(currentZ))
+		
+		rospy.sleep(1.0)
 
 def listener():
 	
 	rospy.init_node('listener', anonymous=True)
+	
+	#check subscriptions
 	rospy.Subscriber("server_spammer", String, callback)
 	rospy.Subscriber("armXYZArr", 	Float32MultiArray, setXYZ)
 	rospy.Subscriber("armRotArr",	Float32MultiArray, setROT)
 	rospy.Subscriber("armMoveFlag", Int32, moveArm)
+	
+	#
+
+	#check for data
+	sock.send("CRobT_fc#0")
+	recvData()
+	
 	rospy.spin()
 
 
@@ -120,12 +146,26 @@ def sendData(sendPacket, sendflag):
 	
 # ##################################################
 #
-# Get a data packet
+# Get a data packet and check what it is..
 #
 def recvData():
 
 	received = sock.recv(1024)
 	print "\tRecieved: ", received
+	
+	#Check what command was returned:
+	temp = received.split('#')
+	#If the returned data begins with CurrentXYZ publish the current XYZ position:
+	if temp[0] == "CurrentXYZ":
+		pose = temp[1].split(',')
+		pubCurrentPose(float(pose[0]), float(pose[1]), float(pose[2]))
+	elif temp[0] == "CurrentMotor":
+		#publish them
+		print "publish"
+	elif temp[0] == "CurrentJoints":
+		#publish them
+		print "Publish"
+	
 
 if __name__ == '__main__':
 
