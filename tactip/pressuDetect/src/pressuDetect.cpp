@@ -9,7 +9,13 @@ namespace enc = sensor_msgs::image_encodings;
 
 static const char WINDOW[] = "Image window";
 cv::Mat mImage;
-
+//*ImageConverter Class 
+/**ImageConverter Class does:
+* 1. Handle Image transportation
+* 2. Setup the gscam image and convert it to a ROS image
+* 3. Opens a window named WINDOW
+* 4. Contains the destructor - which only closes the open image window
+*/
 class ImageConverter
 {
 	ros::NodeHandle nh_;
@@ -18,6 +24,9 @@ class ImageConverter
 	image_transport::Publisher image_pub_;
   
 public:
+	/*!
+	 * \subscribes to the raw image from gscam
+	 */
 	ImageConverter()
 	: it_(nh_)
 	{
@@ -27,7 +36,7 @@ public:
 		cv::namedWindow(WINDOW);
 	}
 
-	~ImageConverter()
+	~ImageConverter() /** <ImageConverter Deconstructor*/
 	{
 		cv::destroyWindow(WINDOW);
 	}
@@ -50,44 +59,25 @@ void imageCb(const sensor_msgs::ImageConstPtr& msg)
 		
 		//pressure detection code
 		cv::cvtColor(cv_ptr->image,cv_ptr->image, CV_BGR2GRAY);
-		cv::threshold(cv_ptr->image, mImage, 110, 120, CV_THRESH_BINARY);
+		cv::threshold(cv_ptr->image, mImage, 110, 130, CV_THRESH_BINARY);
 		
 		IplImage ipl_img = mImage;
 		int count = 0;
 		int x, y = 0;
 		cv::Scalar s;
-		for(x=0; x<ipl_img.height; x++){
-			for(y=0; y<ipl_img.width; y++){
+		//start x at something like 120 then do to 300 rather than img.height
+		for(x=200; x<400; x++){ //for(x=0; x<ipl_img.height; x++){
+			for(y=100; y<300; y++){ //for(y=0; y<ipl_img.width; y++){
 				s = cvGet2D(&ipl_img,x,y);
-				if(s.val[0] == 120){		//if we have found a black pixel
+				if(s.val[0] == 130){		//if we have found a black pixel
 					count++;		//increase counters
 									}
 			}
 		}
-		//count = count - 1200000;
+		//count = count - 9000;
 		printf("%d\n",count);
-		/*int whitePixels = 0;
-		int value;
 
-		for ( int i=0 ; i < 480 ; i++ )
-		{
-			//uchar* ptr = (uchar*) (cv_ptr->imageData + i * cv_ptr-> );
-			for ( int j=0 ; j < 640 ; j++ )
-			{
-				//cv::Scalar img;
-				//img = cv::get2D(cv_ptr->image, i ,j);
-				//CVImage::getpix(i,j);
-				mImage.getpix(i,j);	
-				//value = ptr[j];
-				if ( value == 120 )
-				whitePixels++;	
-			}
-		}
-		
-		whitePixels = whitePixels - 5000;
-		printf("White pixels = %d\n", whitePixels);	
-		*/
-		//cv::imshow(WINDOW, cv_ptr->image);
+		cv::imshow(WINDOW, mImage);
 		cv::waitKey(3);
     
 		image_pub_.publish(cv_ptr->toImageMsg());
