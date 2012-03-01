@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 
 	ros::NodeHandle n;	
 	//Subscriptions
-	ros::Subscriber sub1 = n.subscribe("tactip_reading", 100, tipCallback);
+	ros::Subscriber sub1 = n.subscribe("tactipReading", 100, tipCallback);
 	//Publishing 
 	ros::Publisher pubXYZ = n.advertise<std_msgs::Float32MultiArray>("armXYZArr", 100);
 	ros::Publisher pubROT = n.advertise<std_msgs::Float32MultiArray>("armRotArr", 100);
@@ -27,9 +27,9 @@ int main(int argc, char **argv)
 	ros::Rate loop_rate(1);
 
 	//Send Start XZY, ROT etc:
-	double X = 313.20, Y = 472.74, Z = 286.61;
+	double X = 219.99, Y = -2.31, Z = 740.50;
 	setArmXYZ(pubXYZ, 	X, Y, Z);
-	setArmROT(pubROT,	0.0, 0.0, 0.0, 0.0,
+	setArmROT(pubROT,	0.55, -0.02, 0.83, -0.02,
 				0.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	sendArmMove(pubMOV);
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 			printf("%d\n", tipval);
 			Z = Z - 0.1;
 			setArmXYZ(pubXYZ, X, Y, Z);
-			sendArmMove(pubMOV);
+			//sendArmMove(pubMOV);
 		}
 	}
 	return 0;

@@ -27,9 +27,9 @@ int main(int argc, char **argv)
 	ros::Rate loop_rate(1);
 
 	//Send Start XZY, ROT etc:
-	double X = 313.20, Y = 472.74, Z = 286.61;
+	double X = 219.99, Y = -2.31, Z = 740.50;
 	setArmXYZ(pubXYZ, 	X, Y, Z);
-	setArmROT(pubROT,	0.0, 0.0, 0.0, 0.0,
+	setArmROT(pubROT,	0.55, -0.02, 0.83, -0.02,
 				0.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	sendArmMove(pubMOV);
