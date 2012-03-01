@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 
 	ros::NodeHandle n;	
 	//Subscriptions
-	ros::Subscriber sub1 = n.subscribe("tactip_reading", 100, tipCallback);
+	ros::Subscriber sub1 = n.subscribe("tactipReading", 100, tipCallback);
 	//Publishing 
 	ros::Publisher pubXYZ = n.advertise<std_msgs::Float32MultiArray>("armXYZArr", 100);
 	ros::Publisher pubROT = n.advertise<std_msgs::Float32MultiArray>("armRotArr", 100);

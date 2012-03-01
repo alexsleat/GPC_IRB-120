@@ -28,10 +28,10 @@ int main(int argc, char **argv)
 
 	//Send Start XZY, ROT etc:
 	double X = 313.20, Y = 472.74, Z = 286.61;
-	setArmXYZ(pubXYZ, X, Y, Z);
+	setArmXYZ(pubXYZ, 	X, Y, Z);
 	setArmROT(pubROT,	0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+				0.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	sendArmMove(pubMOV);
 
 	while(ros::ok())
