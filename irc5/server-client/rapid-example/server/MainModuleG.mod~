@@ -77,7 +77,7 @@ MODULE MainModule
 			received_string := "";
 			SocketReceive client_socket \Str:=received_string;		! receive a string
 			TPWrite "Client wrote - " + received_string;			! write it to the pendent
-			SocketSend client_socket \Str:="ACK:#" + received_string;	! return (with "ACK: " attatched to the start).
+			SocketSend client_socket \Str:="ACK:#" + received_string;	! return (with "ACK:#" attatched to the start).
 			
 			done_flag := parser();				! parse the string into an array of strings (global s_func{}) (seperated with '#')
 			SocketSend client_socket \Str:=" ";		! send a blank msg.

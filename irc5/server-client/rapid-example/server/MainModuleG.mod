@@ -64,7 +64,7 @@ MODULE MainModule
 	
 		! Create socket for the server:
 		SocketCreate temp_socket;
-		SocketBind temp_socket, "192.168.125.1", 1025;
+		SocketBind temp_socket, "164.11.73.252", 1025;
 		SocketListen temp_socket;
 
 		!Wait for a connection request

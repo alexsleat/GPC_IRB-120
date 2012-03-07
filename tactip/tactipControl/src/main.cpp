@@ -48,6 +48,7 @@ int main(int argc, char **argv)
 			printf("%d\n", tipval);
 			Z = Z - 0.1;
 			setArmXYZ(pubXYZ, X, Y, Z);
+			
 			sendArmMove(pubMOV);
 		}
 	}

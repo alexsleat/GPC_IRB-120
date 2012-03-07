@@ -26,20 +26,23 @@ def callback(data):
 def setXYZ(data):
 	#subscribe to XYZ
 	#convert XYZ double array to string
-	tempStr = ''
-	tempStr = repr(data.data).replace('array','')
 	
-	tempStr = tempStr.replace(' ','')
-	tempStr = tempStr.replace('(', '')
-	tempStr = tempStr.replace(')','')
-	tempStr = "setXYZ#" + tempStr + "#0"
+	tempStr = ''
+	
+	#Convert the double array of XYZ in to a string (to .3 decimal places)
+	for i in range(len(data.data)):
+		if(i < 1):
+			tempStr = tempStr + "%.3f" % data.data[i]
+		else:
+			tempStr = tempStr + ",%.3f" % data.data[i]
+	
+	tempStr = "setXYZ#" + tempStr + "#0\n"
 
-	print "\n to send:"
 	print tempStr
-	print "\n"	
 	
 	#send string with setXYZ to server.
 	sock.send(tempStr)
+	time.sleep(0.2)
 	#Clear string
 	tempStr = ''
 # ##################################################
@@ -49,31 +52,43 @@ def setXYZ(data):
 def setROT(data):
 	#subscribe to ROT
 	tempStr = data.data
-	#convert ROT double array to 3 strings:
-	#Remove the gumf from python strings
-	tempStr1 = repr(tempStr[0:4]).replace('array','')
-	tempStr1 = tempStr1.replace(' ','')
-	tempStr1 = tempStr1.replace('(', '')
-	tempStr1 = tempStr1.replace(')','')
-
-	tempStr2 = repr(tempStr[4:8]).replace('array','')
-	tempStr2 = tempStr2.replace(' ','')
-	tempStr2 = tempStr2.replace('(', '')
-	tempStr2 = tempStr2.replace(')','')
+		
+	tempStr1 = ''
+	tempStr2 = ''
+	tempStr3 = ''
 	
-	tempStr3 = repr(tempStr[8:14]).replace('array','')
-	tempStr3 = tempStr3.replace(' ','')
-	tempStr3 = tempStr3.replace('(', '')
-	tempStr3 = tempStr3.replace(')','')	
 	
-	tempStr1 = "setROT1#" + tempStr1 + "#0"	
-	tempStr2 = "setROT2#" + tempStr2 + "#0"
-	tempStr3 = "setROT3#" + tempStr3 + "#0"
+	#convert rotation array to 3 strings, maybe a little LOL?
+	
+	for i in range(len(data.data)):
+	
+		if(i < 1):
+			tempStr1 = tempStr1 + "%.2f" % data.data[i]
+		elif(i < 4):
+			tempStr1 = tempStr1 + ",%.2f" % data.data[i]
+		elif(i == 4):
+			tempStr2 = tempStr2 + "%.2f" % data.data[i]
+		elif(i < 8):
+			tempStr2 = tempStr2 + ",%.2f" % data.data[i]
+		elif(i == 8):
+			tempStr3 = tempStr3 + "%.2f" % data.data[i]
+		elif(i < 14):
+			tempStr3 = tempStr3 + ",%.2f" % data.data[i]
+	
+	tempStr1 = "setROT1#" + tempStr1 + "#0\n"	
+	print tempStr1
+	tempStr2 = "setROT2#" + tempStr2 + "#0\n"
+	print tempStr2
+	tempStr3 = "setROT3#" + tempStr3 + "#0\n"
+	print tempStr3
 	
 	#send each string of ROT to server:
 	sock.send(tempStr1)
+	time.sleep(0.2)
 	sock.send(tempStr2)
+	time.sleep(0.2)
 	sock.send(tempStr3)
+	time.sleep(0.2)
 	#Clear strings
 	tempStr = ''
 	tempStr1 = ''
@@ -86,9 +101,12 @@ def setROT(data):
 def moveArm(data):
 	#subscribe to armMoveFlag, if 1 send the move command:
 	if(data.data == 1):
-		sock.send("MoveJ_fc#0")
+		sock.send("MoveJ_fc#0\n")
+		time.sleep(0.2)
 		#publish armMoveFlag to 0 (to say it's moved.)
 		
+	print "MoveJ_fc#0\n"
+	
 def pubCurrentPose(currentX, currentY, currentZ):
 
 	print "Publishing Position"
@@ -121,7 +139,8 @@ def listener():
 	#
 
 	#check for data
-	sock.send("CRobT_fc#0")
+	sock.send("CRobT_fc#0\n")
+	time.sleep(0.2)
 	recvData()
 
 	rospy.spin()
@@ -135,6 +154,7 @@ def sendData(sendPacket, sendflag):
 
 	if sendflag == 1:
 		sock.send(sendPacket)
+		time.sleep(0.2)
 		print "\tSent: ", sendPacket
 		sendflag = 0
 	
@@ -152,8 +172,8 @@ def recvData():
 	temp = received.split('#')
 	#If it begins with an ACK, print it and recheck the socket:
 	if temp[0] == "ACK:":
-		print "\tRecieved: ", received
-		print "Recheck"
+		print "\tRecieved: " + received
+		#print "Recheck"
 		received = sock.recv(1024)
 		#Check what command was returned:
 		temp = received.split('#')
@@ -177,7 +197,7 @@ if __name__ == '__main__':
 
 # Set up sockets
 	print "starting socket"
-	HOST, PORT = "192.168.125.1", 1025
+	HOST, PORT = "164.11.73.252", 1025
 	#data = ",".join(sys.argv[1:])
 	# Create a socket (SOCK_STREAM means a TCP socket)
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
