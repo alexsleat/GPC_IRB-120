@@ -116,6 +116,8 @@ MODULE MainModule
 				SocketSend client_socket \Str:= send_string;
 				!qunationlkasfja;lskdghslfjhs
 				TPWrite "q1 = : " + q1 + ", " + "q2 = : " + q2 + ", " + "q3 = : " + q3 + ", " + "q4 = : " + q4;
+				send_string := "CurrentROT#" + q1 + "," +  q2 + "," + q3 + "," + q4 + "#0";
+				SocketSend client_socket \Str:= send_string;
 
 	! *********************************************************
 	! CJointT func
@@ -185,6 +187,7 @@ MODULE MainModule
 	! close down the server when closeSocket is received.
 	!
 			ELSEIF s_func{1} = "closeSocket" THEN
+				MoveAbsJ [[-0.156093,0.538919,0.230629,-0.241518,-0.757838,4.53954],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]]\NoEOffs, v1000, z50, tool0;
 				main_loop := FALSE;
 		! Else Error.			
 			ELSE
@@ -478,8 +481,15 @@ MODULE MainModule
 	!
 	! Do the function call with all this lovely new data
 	!
-		
-		MoveJ ToPoint:=pose, Speed:=v500, Zone:=z50, Tool:=tool0;
+	
+		! Print out the position it should be going to:
+		TPWrite "XYZ " + NumToStr(glob_XYZ{1}, 4) + " " + NumToStr(glob_XYZ{2}, 4) + " " + NumToStr(glob_XYZ{3}, 4);
+		TPWrite "ROT1 " + NumToStr(glob_ROT1{1}, 4) + " " + NumToStr(glob_ROT1{2}, 4) + " " + NumToStr(glob_ROT1{3}, 4) + " " + NumToStr(glob_ROT1{4}, 4);
+		TPWrite "ROT2 " + NumToStr(glob_ROT2{1}, 4) + " " + NumToStr(glob_ROT2{2}, 4) + " " + NumToStr(glob_ROT2{3}, 4) + " " + NumToStr(glob_ROT2{4}, 4);
+		TPWrite "ROT3 " + NumToStr(glob_ROT3{1}, 4) + " " + NumToStr(glob_ROT3{2}, 4) + " " + NumToStr(glob_ROT3{3}, 4) + " " + NumToStr(glob_ROT3{4}, 4) + " " + NumToStr(glob_ROT3{5}, 4) + " " + NumToStr(glob_ROT3{6}, 4);
+	
+		!Go.
+		MoveJ ToPoint:=pose, Speed:=v400, Zone:=z50, Tool:=tool0;
 		
 		temp_string := "MoveJ-ing";
 		

@@ -42,7 +42,7 @@ def setXYZ(data):
 	
 	#send string with setXYZ to server.
 	sock.send(tempStr)
-	time.sleep(0.2)
+	time.sleep(0.5)
 	#Clear string
 	tempStr = ''
 # ##################################################
@@ -84,11 +84,11 @@ def setROT(data):
 	
 	#send each string of ROT to server:
 	sock.send(tempStr1)
-	time.sleep(0.2)
+	time.sleep(0.5)
 	sock.send(tempStr2)
-	time.sleep(0.2)
+	time.sleep(0.5)
 	sock.send(tempStr3)
-	time.sleep(0.2)
+	time.sleep(0.5)
 	#Clear strings
 	tempStr = ''
 	tempStr1 = ''
@@ -100,13 +100,28 @@ def setROT(data):
 #
 def moveArm(data):
 	#subscribe to armMoveFlag, if 1 send the move command:
+	
+	pubMOV = rospy.Publisher('currentZ', Int32)
+	
 	if(data.data == 1):
 		sock.send("MoveJ_fc#0\n")
-		time.sleep(0.2)
+		time.sleep(0.5)
 		#publish armMoveFlag to 0 (to say it's moved.)
-		
-	print "MoveJ_fc#0\n"
-	
+		pubMOV.publish(Int32(0))
+		print "MoveJ_fc#0\n"
+# ##################################################
+#
+# Send a request for the current robots position.
+#	
+def requestCurrentPose():
+
+	sock.send("CRobT_fc#0\n")
+	time.sleep(0.5)
+	print "CRobT_fc#0\n"
+# ##################################################
+#
+# function to publish the XYZ position of the robot
+#	
 def pubCurrentPose(currentX, currentY, currentZ):
 
 	print "Publishing Position"
@@ -125,7 +140,34 @@ def pubCurrentPose(currentX, currentY, currentZ):
 		pubZ.publish(Float32(currentZ))
 		
 		rospy.sleep(1.0)
+# ##################################################
+#
+# function to publish the rotation information of the arm
+#
+def pubCurrentROT(current0, current1, current2, current3):
 
+	print "Publishing Position"
+	pubR0 = rospy.Publisher('currentR0', Float32)
+	pubR1 = rospy.Publisher('currentR1', Float32)
+	pubR2 = rospy.Publisher('currentR2', Float32)
+	pubR3 = rospy.Publisher('currentR3', Float32)
+
+	while not rospy.is_shutdown():
+	
+		#info = "Current ROT: " + str(round(currentR0,4)) + ", " + str(round(currentR1,4)) + ", " + str(round(currentR2,4) + ", " + str(round(currentR3,4))
+		
+		#rospy.loginfo(info)
+		
+		pubR0.publish(Float32(currentR0))
+		pubR1.publish(Float32(currentR1))
+		pubR2.publish(Float32(currentR2))
+		pubR3.publish(Float32(currentR3))
+		
+		rospy.sleep(1.0)
+# ##################################################
+#
+# 
+#
 def listener():
 	
 	rospy.init_node('listener', anonymous=True)
@@ -140,7 +182,7 @@ def listener():
 
 	#check for data
 	sock.send("CRobT_fc#0\n")
-	time.sleep(0.2)
+	time.sleep(0.5)
 	recvData()
 
 	rospy.spin()
@@ -154,7 +196,7 @@ def sendData(sendPacket, sendflag):
 
 	if sendflag == 1:
 		sock.send(sendPacket)
-		time.sleep(0.2)
+		time.sleep(0.5)
 		print "\tSent: ", sendPacket
 		sendflag = 0
 	
@@ -183,6 +225,10 @@ def recvData():
 		print "Publishing " + temp[0]
 		pose = temp[1].split(',')
 		pubCurrentPose(float(pose[0]), float(pose[1]), float(pose[2]))
+	elif temp[0] == "CurrentROT":
+		print "Publishing" + temp[0]
+		pose = temp[1].split(',')
+		pubCurrentROT(float(pose[0]), float(pose[1]), float(pose[2]), float(pose[3]))
 	elif temp[0] == "CurrentMotor":
 		#publish them
 		print "Publishing " + temp[0]
