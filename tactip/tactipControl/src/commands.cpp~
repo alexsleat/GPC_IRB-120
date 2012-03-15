@@ -1,6 +1,16 @@
 #include "commands.hpp"
 
-
+//!  setArmXYZ 
+/*!
+ *A function call to set and publish the XYZ array of the arm, listened to by rosclient to send the set command to the server.
+ * 
+ *@param pub a ros::Publisher assosiated with the XYZ array in the main function.
+ *@param X a double representing the X position to set the arm to.
+ *@param Y a double representing the Y position to set the arm to.
+ *@param Z a double representing the Z position to set the arm to.
+ *
+ *@return int 0 if correct, -1 if failed.
+*/
 int setArmXYZ(ros::Publisher pub, double X, double Y, double Z)
 {
 
@@ -25,13 +35,34 @@ int setArmXYZ(ros::Publisher pub, double X, double Y, double Z)
 	return 0;
 
 }
-
+//!  setArmROT
+/*!
+ *A function call to set and publish the rotation array of the arm, listened to by rosclient to send the set command to the server.
+ * 
+ *@param pub a ros::Publisher assosiated with the rotation array in the main function.
+ *@param r1 a double representing the r1 position to set the arm to.
+ *@param r2 a double representing the r2 position to set the arm to.
+ *@param r3 a double representing the r3 position to set the arm to.
+ *@param r4 a double representing the r4 position to set the arm to.
+ *@param r5 a double representing the r5 position to set the arm to.
+ *@param r6 a double representing the r6 position to set the arm to.
+ *@param r7 a double representing the r7 position to set the arm to.
+ *@param r8 a double representing the r8 position to set the arm to.
+ *@param r9 a double representing the r9 position to set the arm to.
+ *@param r10 a double representing the r10 position to set the arm to.
+ *@param r11 a double representing the r11 position to set the arm to.
+ *@param r12 a double representing the r12 position to set the arm to.
+ *@param r13 a double representing the r13 position to set the arm to.
+ *@param r14 a double representing the r14 position to set the arm to.
+ *
+ *@return int 0 if correct, -1 if failed.
+*/
 int setArmROT(ros::Publisher pub, double r1, double r2, double r3, double r4, 
 		double r5, double r6, double r7, double r8, 
 		double r9, double r10, double r11, double r12, double r13, double r14)
 {
 
-	ros::Publisher pub = n.advertise<std_msgs::Float32MultiArray>("armRotArr", 100);
+	
 
 	//Set up array
 	std_msgs::Float32MultiArray armRotArr;
@@ -56,8 +87,6 @@ int setArmROT(ros::Publisher pub, double r1, double r2, double r3, double r4,
 
 int sendArmMove(ros::Publisher pub)
 {
-
-	ros::Publisher pub = n.advertise<std_msgs::Int32>("armMoveFlag", 100);
 
 	//Set up array
 	std_msgs::Int32 armMoveFlag;

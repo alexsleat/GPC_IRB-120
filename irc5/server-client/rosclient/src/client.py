@@ -19,9 +19,10 @@ def callback(data):
 	sendflag = 1
 	sendData("hi", sendflag)
 	recvData()
-# ##################################################
+## setXYZ Function
 #
-# If a new XYZ is published, this callback will happen and send the pose to the server
+# If a new XYZ is published, this callback will happen and send the pose to the server.
+# \param data 
 #
 def setXYZ(data):
 	#subscribe to XYZ
@@ -45,7 +46,7 @@ def setXYZ(data):
 	time.sleep(0.5)
 	#Clear string
 	tempStr = ''
-# ##################################################
+## setROT Function
 #
 # If a new rotation matrix is published, this callback will send the data to the server
 #	
@@ -94,7 +95,7 @@ def setROT(data):
 	tempStr1 = ''
 	tempStr2 = ''
 	tempStr3 = ''
-# ##################################################
+## moveArm Function
 #
 # If armMoveFlag is set, a move command will be sent to the server.
 #
@@ -109,7 +110,7 @@ def moveArm(data):
 		#publish armMoveFlag to 0 (to say it's moved.)
 		pubMOV.publish(Int32(0))
 		print "MoveJ_fc#0\n"
-# ##################################################
+## requestCurrentPose Function
 #
 # Send a request for the current robots position.
 #	
@@ -118,7 +119,7 @@ def requestCurrentPose():
 	sock.send("CRobT_fc#0\n")
 	time.sleep(0.5)
 	print "CRobT_fc#0\n"
-# ##################################################
+## pubCurrentPose Function
 #
 # function to publish the XYZ position of the robot
 #	
@@ -140,7 +141,7 @@ def pubCurrentPose(currentX, currentY, currentZ):
 		pubZ.publish(Float32(currentZ))
 		
 		rospy.sleep(1.0)
-# ##################################################
+## pubCurrentROT Function
 #
 # function to publish the rotation information of the arm
 #
@@ -164,9 +165,9 @@ def pubCurrentROT(current0, current1, current2, current3):
 		pubR3.publish(Float32(currentR3))
 		
 		rospy.sleep(1.0)
-# ##################################################
+## listener Function
 #
-# 
+# Checks for changes in std_msgs the program listens to and calls the approriate callback.
 #
 def listener():
 	
@@ -188,9 +189,9 @@ def listener():
 	rospy.spin()
 
 
-# ##################################################
+## sendData Function
 #
-# Send a data packet
+# Send a data packet to the server (IRC5)
 #
 def sendData(sendPacket, sendflag):
 
@@ -200,9 +201,9 @@ def sendData(sendPacket, sendflag):
 		print "\tSent: ", sendPacket
 		sendflag = 0
 	
-# ##################################################
+## recvData Function
 #
-# Get a data packet and check what it is..
+# Get a data packet from the server (IRC5) and check what it is..
 #
 def recvData():
 

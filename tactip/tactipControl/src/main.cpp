@@ -58,7 +58,14 @@ int main(int argc, char **argv)
 	}
 	return 0;
 }
-
+//!  tipCallback 
+/*!
+ *A function callback to get the current reading of the tactip from its published rosmsg.
+ * 
+ *@param const std_msgs::Int32::ConstPtr& pointer to the tip data.
+ *
+ *@return void.
+*/
 void tipCallback(const std_msgs::Int32::ConstPtr& tip)
 {
 	// print all the remaining numbers

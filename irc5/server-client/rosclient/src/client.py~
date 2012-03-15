@@ -42,7 +42,7 @@ def setXYZ(data):
 	
 	#send string with setXYZ to server.
 	sock.send(tempStr)
-	time.sleep(1.0)
+	time.sleep(0.5)
 	#Clear string
 	tempStr = ''
 # ##################################################
@@ -84,11 +84,11 @@ def setROT(data):
 	
 	#send each string of ROT to server:
 	sock.send(tempStr1)
-	time.sleep(1.0)
+	time.sleep(0.5)
 	sock.send(tempStr2)
-	time.sleep(1.0)
+	time.sleep(0.5)
 	sock.send(tempStr3)
-	time.sleep(1.0)
+	time.sleep(0.5)
 	#Clear strings
 	tempStr = ''
 	tempStr1 = ''
@@ -105,7 +105,7 @@ def moveArm(data):
 	
 	if(data.data == 1):
 		sock.send("MoveJ_fc#0\n")
-		time.sleep(1.0)
+		time.sleep(0.5)
 		#publish armMoveFlag to 0 (to say it's moved.)
 		pubMOV.publish(Int32(0))
 		print "MoveJ_fc#0\n"
@@ -116,7 +116,7 @@ def moveArm(data):
 def requestCurrentPose():
 
 	sock.send("CRobT_fc#0\n")
-	time.sleep(1.0)
+	time.sleep(0.5)
 	print "CRobT_fc#0\n"
 # ##################################################
 #
@@ -182,7 +182,7 @@ def listener():
 
 	#check for data
 	sock.send("CRobT_fc#0\n")
-	time.sleep(1.0)
+	time.sleep(0.5)
 	recvData()
 
 	rospy.spin()
@@ -196,7 +196,7 @@ def sendData(sendPacket, sendflag):
 
 	if sendflag == 1:
 		sock.send(sendPacket)
-		time.sleep(1.0)
+		time.sleep(0.5)
 		print "\tSent: ", sendPacket
 		sendflag = 0
 	
