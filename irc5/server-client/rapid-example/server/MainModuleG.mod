@@ -96,19 +96,20 @@ MODULE MainModule
 				
 				send_string := trans();
 				SocketSend client_socket \Str:= send_string;
+				
 	! *********************************************************
 	! MoveJ func		
 			ELSEIF s_func{1} = "MoveJ_fc" THEN
 			
 				send_string := MoveJ_fc();
 				SocketSend client_socket \Str:= send_string;
-
+				
 	! *********************************************************
 	! CRobT func
 			ELSEIF s_func{1} = "CRobT_fc" THEN
 	
 				ok := CRobT_fc();
-				
+
 				!xyz coordinates
 				TPWrite "Coordinates: x = " + tranx + ", y = " + trany + ", z = " + tranz + ". ";
 				!Also send it back over the socket
@@ -118,7 +119,6 @@ MODULE MainModule
 				TPWrite "q1 = : " + q1 + ", " + "q2 = : " + q2 + ", " + "q3 = : " + q3 + ", " + "q4 = : " + q4;
 				send_string := "CurrentROT#" + q1 + "," +  q2 + "," + q3 + "," + q4 + "#0";
 				SocketSend client_socket \Str:= send_string;
-
 	! *********************************************************
 	! CJointT func
 			ELSEIF s_func{1} = "CJointT_fc" THEN
@@ -163,25 +163,45 @@ MODULE MainModule
 	! *********************************************************
 	! Function calls for setting XYZ and Rotation matrix:
 	!
+			! *********************************************************
 			ELSEIF s_func{1} = "setXYZ" THEN
 				done_flag := subParser(s_func{2}, "XYZ");
 
 				TPWrite "Client wrote - " + NumToStr(glob_XYZ{1}, 4) + " " + NumToStr(glob_XYZ{2}, 4) + " " + NumToStr(glob_XYZ{3}, 4);
 				
+				! Reply with an acknowledgement and current XYZ
+				send_string := "ACK#setXYZ#" + NumToStr(glob_XYZ{1}, 4) + " " + NumToStr(glob_XYZ{2}, 4) + " " + NumToStr(glob_XYZ{3}, 4) +"#0";
+				SocketSend client_socket \Str:= send_string;
+				
+			! *********************************************************
 			ELSEIF s_func{1} = "setROT1" THEN
 				done_flag := subParser(s_func{2}, "ROT1");
 				
 				TPWrite "Client wrote - " + NumToStr(glob_ROT1{1}, 4) + " " + NumToStr(glob_ROT1{2}, 4) + " " + NumToStr(glob_ROT1{3}, 4) + " " + NumToStr(glob_ROT1{4}, 4);
 				
+				! Reply with an acknowledgement and current XYZ
+				send_string := "ACK#setROT1#" + NumToStr(glob_ROT1{1}, 4) + " " + NumToStr(glob_ROT1{2}, 4) + " " + NumToStr(glob_ROT1{3}, 4) + " " + NumToStr(glob_ROT1{4}, 4) + "#0";
+				SocketSend client_socket \Str:= send_string;
+
+			! *********************************************************				
 			ELSEIF s_func{1} = "setROT2" THEN
 				done_flag := subParser(s_func{2}, "ROT2");
 				
 				TPWrite "Client wrote - " + NumToStr(glob_ROT2{1}, 4) + " " + NumToStr(glob_ROT2{2}, 4) + " " + NumToStr(glob_ROT2{3}, 4) + " " + NumToStr(glob_ROT2{4}, 4);
 				
+				! Reply with an acknowledgement and current XYZ
+				send_string := "ACK#setROT2#" + NumToStr(glob_ROT2{1}, 4) + " " + NumToStr(glob_ROT2{2}, 4) + " " + NumToStr(glob_ROT2{3}, 4) + " " + NumToStr(glob_ROT2{4}, 4) + "#0";
+				SocketSend client_socket \Str:= send_string;
+
+			! *********************************************************				
 			ELSEIF s_func{1} = "setROT3" THEN
 				done_flag := subParser(s_func{2}, "ROT3");
 				
 				!TPWrite "Client wrote - " + NumToStr(glob_ROT3{1}, 4) + " " + NumToStr(glob_ROT3{2}, 4) + " " + NumToStr(glob_ROT3{3}, 4) + " " + NumToStr(glob_ROT3{4}, 4) + " " + NumToStr(glob_ROT3{5}, 4) + " " + NumToStr(glob_ROT3{6}, 4);
+				
+				! Reply with an acknowledgement and current XYZ
+				send_string := "ACK#setROT3#" + NumToStr(glob_ROT3{1}, 4) + " " + NumToStr(glob_ROT3{2}, 4) + " " + NumToStr(glob_ROT3{3}, 4) + " " + NumToStr(glob_ROT3{4}, 4) + " " + NumToStr(glob_ROT3{5}, 4) + " " + NumToStr(glob_ROT3{6}, 4) + "#0";
+				SocketSend client_socket \Str:= send_string;
 						
 	! *********************************************************
 	! close down the server when closeSocket is received.
@@ -489,7 +509,7 @@ MODULE MainModule
 		TPWrite "ROT3 " + NumToStr(glob_ROT3{1}, 4) + " " + NumToStr(glob_ROT3{2}, 4) + " " + NumToStr(glob_ROT3{3}, 4) + " " + NumToStr(glob_ROT3{4}, 4) + " " + NumToStr(glob_ROT3{5}, 4) + " " + NumToStr(glob_ROT3{6}, 4);
 	
 		!Go.
-		MoveJ ToPoint:=pose, Speed:=v400, Zone:=z50, Tool:=tool0;
+		MoveL ToPoint:=pose, Speed:=v400, Zone:=z50, Tool:=tool0;
 		
 		temp_string := "MoveJ-ing";
 		

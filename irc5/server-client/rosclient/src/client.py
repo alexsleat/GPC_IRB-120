@@ -13,6 +13,9 @@ from std_msgs.msg import Float32
 from std_msgs.msg import Float32MultiArray
 from std_msgs.msg import Int32
 
+sendFlag = 1
+queue = 0
+
 def callback(data):
 	#rospy.loginfo("server_spammer: %s",data.data)
 	#if sendflag is set, send the data
@@ -42,8 +45,11 @@ def setXYZ(data):
 	print tempStr
 	
 	#send string with setXYZ to server.
-	sock.send(tempStr)
-	time.sleep(0.5)
+	sendData(tempStr)
+	print "	Sent::" + tempStr
+	while recvData() == 0:
+		print "No Datas"
+	#time.sleep(0.5)
 	#Clear string
 	tempStr = ''
 ## setROT Function
@@ -84,12 +90,21 @@ def setROT(data):
 	print tempStr3
 	
 	#send each string of ROT to server:
-	sock.send(tempStr1)
-	time.sleep(0.5)
-	sock.send(tempStr2)
-	time.sleep(0.5)
-	sock.send(tempStr3)
-	time.sleep(0.5)
+	sendData(tempStr1)
+	print "	Sent::" + tempStr1
+	while recvData() == 0:
+		print "No Datas"
+	#time.sleep(0.5)
+	sendData(tempStr2)
+	print "	Sent::" + tempStr2
+	while recvData() == 0:
+		print "No Datas"
+	#time.sleep(0.5)
+	sendData(tempStr3)
+	print "	Sent::" + tempStr3
+	while recvData() == 0:
+		print "No Datas"
+	#time.sleep(0.5)
 	#Clear strings
 	tempStr = ''
 	tempStr1 = ''
@@ -105,19 +120,25 @@ def moveArm(data):
 	pubMOV = rospy.Publisher('currentZ', Int32)
 	
 	if(data.data == 1):
-		sock.send("MoveJ_fc#0\n")
-		time.sleep(0.5)
+		sendData("MoveJ_fc#0\n")
+		print "	Sent::" + "MoveJ_fc#0"
+		while recvData() == 0:
+			print "No Datas"
 		#publish armMoveFlag to 0 (to say it's moved.)
 		pubMOV.publish(Int32(0))
 		print "MoveJ_fc#0\n"
+		
 ## requestCurrentPose Function
 #
 # Send a request for the current robots position.
 #	
 def requestCurrentPose():
 
-	sock.send("CRobT_fc#0\n")
-	time.sleep(0.5)
+	sendData("CRobT_fc#0\n")
+	print "	Sent::" + "CRobT_fc#0"
+	while recvData() == 0:
+		print "No Datas"
+	#time.sleep(0.5)
 	print "CRobT_fc#0\n"
 ## pubCurrentPose Function
 #
@@ -134,13 +155,13 @@ def pubCurrentPose(currentX, currentY, currentZ):
 	
 		info = "Current XYZ: " + str(round(currentX,4)) + ", " + str(round(currentY,4)) + ", " + str(round(currentZ,4))
 		
-		rospy.loginfo(info)
+		#rospy.loginfo(info)
 		
 		pubX.publish(Float32(currentX))
 		pubY.publish(Float32(currentY))
 		pubZ.publish(Float32(currentZ))
 		
-		rospy.sleep(1.0)
+		#rospy.sleep(1.0)
 ## pubCurrentROT Function
 #
 # function to publish the rotation information of the arm
@@ -182,9 +203,11 @@ def listener():
 	#
 
 	#check for data
-	sock.send("CRobT_fc#0\n")
-	time.sleep(0.5)
-	recvData()
+	sendData("CRobT_fc#0\n")
+	print "	Sent::" + "CRobT_fc#0"
+	while recvData() == 0:
+		print "No Datas"
+	#time.sleep(0.5)
 
 	rospy.spin()
 
@@ -193,11 +216,14 @@ def listener():
 #
 # Send a data packet to the server (IRC5)
 #
-def sendData(sendPacket, sendflag):
+def sendData(sendPacket):
 
-	if sendflag == 1:
+	if sendFlag == 1:
 		sock.send(sendPacket)
-		time.sleep(0.5)
+		print "	Sent::" + sendPacket
+		while recvData() == 0:
+			print "No Datas"
+		#time.sleep(0.5)
 		print "\tSent: ", sendPacket
 		sendflag = 0
 	
@@ -207,19 +233,26 @@ def sendData(sendPacket, sendflag):
 #
 def recvData():
 
-	print "Checking rcvdata"
-	received = sock.recv(1024)
+
+	pubSF = rospy.Publisher('sendFlag', Int32)
 	
+	print "Checking recvData"
+	received = sock.recv(1024)
+	print "\tRecieved::" + received
+	
+	if received == 0:
+		pubSF.publish(Int32(0))	#Set the sendFlag low, so other services wait until this is done
+		return 0
 	
 	#Check what command was returned:
 	temp = received.split('#')
 	#If it begins with an ACK, print it and recheck the socket:
-	if temp[0] == "ACK:":
-		print "\tRecieved: " + received
-		#print "Recheck"
-		received = sock.recv(1024)
-		#Check what command was returned:
-		temp = received.split('#')
+	#if temp[0] == "ACK":
+	#	print "\tRecieved::" + received
+	#	#print "Recheck"
+	#	received = sock.recv(1024)
+	#	#Check what command was returned:
+	#	temp = received.split('#')
 		
 	#Check how the received string starts and publish acordingly	
 	if temp[0] == "CurrentXYZ":
@@ -238,7 +271,11 @@ def recvData():
 		print "Publishing " + temp[0]
 	else:
 		print received
-			
+		pubSF.publish(Int32(0))	#Set the sendFlag low, so other services wait until this is done
+		return 0
+		
+	pubSF.publish(Int32(1))	#Set the sendFlag high, so other services can continue	
+	return 1
 
 if __name__ == '__main__':
 
